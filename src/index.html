@@ -1,12 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test-task_Vozhdaeva</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&family=Source+Sans+3&display=swap"
+      rel="stylesheet" />
   </head>
-  <body>
-    <div class="div">blablabla</div>
+  <body class="body">
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+          <a class="link logo">Лого</a>
+          <ul class="list menu">
+            <li class="menu-item"><a href="" class="link menu-link">Каталог</a></li>
+            <li class="menu-item"><a href="" class="link menu-link">Отзывы</a></li>
+            <li class="menu-item"><a href="" class="link menu-link">Контакты</a></li>
+          </ul>
+          <a href="tel:+7xxxxxxxxxx" class="link tel menu-link">+7XXXXXXXXXX</a>
+          <a href="" class="link cart">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M8.10011 10.7778V4.66667C8.10011 3.69421 8.51099 2.76158 9.24237 2.07394C9.97375 1.38631 10.9657 1 12 1C13.0344 1 14.0263 1.38631 14.7577 2.07394C15.4891 2.76158 15.9 3.69421 15.9 4.66667V10.7778M19.6959 23H4.30414C4.12431 23.0005 3.94632 22.966 3.78141 22.8985C3.61651 22.8311 3.46828 22.7322 3.3461 22.6082C3.22393 22.4841 3.13045 22.3376 3.0716 22.1778C3.01274 22.018 2.98978 21.8485 3.00417 21.68L4.10915 8.23555C4.13534 7.92864 4.28379 7.64232 4.5248 7.43385C4.76581 7.22538 5.08163 7.11012 5.40912 7.11111H18.5909C18.9184 7.11012 19.2342 7.22538 19.4752 7.43385C19.7162 7.64232 19.8647 7.92864 19.8909 8.23555L20.9958 21.68C21.0102 21.8485 20.9873 22.018 20.9284 22.1778C20.8695 22.3376 20.7761 22.4841 20.6539 22.6082C20.5317 22.7322 20.3835 22.8311 20.2186 22.8985C20.0537 22.966 19.8757 23.0005 19.6959 23Z"
+                stroke="#40393B"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </a>
+        </nav>
+      </header>
+      <main class="main">
+        <div class="hero"></div>
+        <aside class="filter">
+          <div class="select-wrapper">
+            <select class="filter-item filter-item_name" name="name">
+              <option value="all" selected>Название</option>
+              <option value="mono">2</option>
+              <option value="bright">3</option>
+              <option value="pastel">4</option>
+            </select>
+          </div>
+          <div class="select-wrapper">
+            <select class="filter-item filter-item_price" name="price">
+              <option value="all" selected>Цена</option>
+              <option value="less2000">2000</option>
+              <option value="from2to3">2000 до 3000</option>
+              <option value="from3000">Более 3000</option>
+            </select>
+          </div>
+          <div class="select-wrapper">
+            <select class="filter-item filter-item_brand" name="brand">
+              <option value="all" selected="true">Бренд</option>
+              <option value="roses">1</option>
+              <option value="peonies">2</option>
+            </select>
+          </div>
+        </aside>
+        <ul class="cards list">
+          <li class="cards-item card" tags="mono bright tulips less2000">
+            <a href="" class="link card-link">
+              <img src="" alt="" class="card-img" />
+              <h4 class="card-title">ааа</h4>
+              <span class="card-price">1&nbsp;500&nbsp;&#8381;</span>
+              <button class="card-btn">Заказать</button>
+            </a>
+          </li>
+        </ul>
+      </main>
+    </div>
+    <footer class="footer">
+      <div class="wrapper">
+        <nav class="nav_footer">
+          <a class="link logo">Лого</a>
+          <ul class="list menu">
+            <li class="menu-item"><a href="" class="link menu-link">Каталог</a></li>
+            <li class="menu-item"><a href="" class="link menu-link">Подписка</a></li>
+            <li class="menu-item"><a href="" class="link menu-link">Отзывы</a></li>
+            <li class="menu-item"><a href="" class="link menu-link">Контакты</a></li>
+          </ul>
+          <ul class="list social">
+            <li class="social-item">
+              <a href="" class="link social-link">
+                <!-- <img src="./assets/icons/instagram.svg" alt="instagram" class="social-img" /> -->
+              </a>
+            </li>
+            <li class="social-item">
+              <a href="" class="link social-link">
+                <!-- <img src="./assets/icons/facebook.svg" alt="facebook" class="social-img" />-->
+              </a>
+            </li>
+            <li class="social-item">
+              <a href="" class="link social-link">
+                <!-- <img src="./assets/icons/pinterest.svg" alt="pinterest" class="social-img"/> -->
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
   </body>
   <script src="main.js"></script>
 </html>

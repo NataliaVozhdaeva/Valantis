@@ -4,7 +4,7 @@ export const getData = async () => {
   try {
     const url = `http://api.valantis.store:40000/`;
     const auth = timeStamp();
-    console.log('auth ', auth);
+
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -14,6 +14,7 @@ export const getData = async () => {
 
       body: JSON.stringify({
         action: 'get_ids',
+        params: { limit: 5 },
         // action: 'get_items',
         // params: { ids: ['2b7c7643-6852-4562-8a72-7666c72b3518'] },
       }),
@@ -25,5 +26,3 @@ export const getData = async () => {
     console.log('error');
   }
 };
-
-// export {getData}

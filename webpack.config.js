@@ -12,11 +12,16 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       { test: /\.(js)$/, use: 'babel-loader' },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+      },
     ],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index_bundle.js',
+    assetModuleFilename: 'assets/[name][ext]',
   },
   plugins: [
     new HtmlWebpackPlugin({

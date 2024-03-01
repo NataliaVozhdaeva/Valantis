@@ -4,6 +4,7 @@
   --footer: #ded9d5;
   --cards: #fafafa;
   --text: #40393b;
+  --default-gray: #e9e9ed;
   --merri: 'Merriweather', serif;
   --sans: 'Source Sans 3', sans-serif;
 }
@@ -109,7 +110,7 @@
 
 .main {
   display: grid;
-  grid-template-rows: 350px 60px 1fr 70px;
+  grid-template-rows: 400px 150px 1fr;
   gap: 50px;
 
   margin-bottom: 80px;
@@ -120,30 +121,29 @@
   background-size: cover;
 }
 
-.filter-item {
-  position: relative;
-  appearance: none;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-
-  width: 100%;
-  padding: 18px;
-
-  border: var(--btn) solid 1px;
-  border-radius: 10px;
+.filter {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 50px;
 }
 
 .select-wrapper {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.select-wrapper::before {
+.select-wrapper label {
+  margin-bottom: 20px;
+}
+
+.select-wrapper:not(:nth-child(2))::before {
   content: '';
   position: absolute;
   z-index: 2;
   right: 18px;
-  top: calc(50% - 8px);
+  top: calc(50% + 8px);
 
   width: 10px;
   height: 10px;
@@ -153,15 +153,42 @@
   transform: rotate(-45deg);
 }
 
+.range-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-item,
+.filter-item_pricemin,
+.filter-item_pricemax {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  width: 100%;
+  padding: 18px;
+
+  border: var(--btn) solid 1px;
+  border-radius: 10px;
+
+  appearance: none;
+}
+
+.filter-item_pricemin,
+.filter-item_pricemax {
+  background-color: var(--default-gray);
+}
+
+.filter-item_pricemin:focus-visible,
+.filter-item_pricemax:focus-visible {
+  outline: var(--btn) solid 1px;
+}
+
 .filter-item:hover {
   background-color: var(--cards);
   cursor: pointer;
-}
-
-.filter {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
 }
 
 .cards {
@@ -192,8 +219,10 @@
   max-width: 248px;
 }
 
-.card-img {
-  margin-bottom: 10px;
+.card-id {
+  align-self: start;
+  order: -1;
+  font-size: 14px;
 }
 
 .card-title {
@@ -250,8 +279,22 @@
   vertical-align: middle;
 }
 
-.footer .wrapper {
+.footer-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  max-width: 1440px;
   min-height: auto;
+  margin: auto;
+}
+
+.social-link:hover {
+  opacity: 0.7;
+}
+
+.icons8-link:hover {
+  text-decoration: underline;
 }
 
 @keyframes hover {

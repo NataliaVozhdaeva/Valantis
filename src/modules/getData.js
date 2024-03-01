@@ -1,18 +1,10 @@
-const tymeStamp = () => {
-  const today = new Date();
-  const year = today.getUTCFullYear();
-  const month = today.getUTCMonth() + 1;
-  const day = today.getUTCDate();
+import { timeStamp } from './getAuth';
 
-  const auth = md5('Valantis_' + year + month.toString().padStart(2, 0) + day.toString().padStart(2, 0));
-
-  return auth;
-};
-
-const getData = async () => {
+export const getData = async () => {
   try {
     const url = `http://api.valantis.store:40000/`;
-    const auth = tymeStamp();
+    const auth = timeStamp();
+    console.log('auth ', auth);
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -22,6 +14,8 @@ const getData = async () => {
 
       body: JSON.stringify({
         action: 'get_ids',
+        // action: 'get_items',
+        // params: { ids: ['2b7c7643-6852-4562-8a72-7666c72b3518'] },
       }),
     });
     const data = await res.json();
@@ -32,4 +26,4 @@ const getData = async () => {
   }
 };
 
-getData();
+// export {getData}

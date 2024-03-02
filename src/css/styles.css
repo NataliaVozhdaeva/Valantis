@@ -293,6 +293,33 @@
   text-decoration: underline;
 }
 
+.pagination {
+  margin: auto;
+}
+
+.pagination-btn {
+  padding: 15px;
+
+  color: var(--btn);
+
+  background-color: var(--cards);
+  border: var(--btn) solid 1px;
+  border-radius: 10px;
+
+  transition: 0.3s;
+}
+
+.pagination-btn:not([disabled]):hover {
+  color: var(--cards);
+
+  background-color: var(--btn);
+  cursor: pointer;
+}
+
+.pagination-btn[disabled] {
+  opacity: 0.5;
+}
+
 @keyframes hover {
   0% {
     width: 0;

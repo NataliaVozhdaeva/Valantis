@@ -20,7 +20,7 @@ export const createCatalogPage = async () => {
   await createCards();
 
   if (document.querySelectorAll('.card').length < 50) {
-    console.log('alarm', document.querySelectorAll('.card').length);
+    // console.log('alarm', document.querySelectorAll('.card').length);
 
     const limit = 50 - document.querySelectorAll('.card').length;
     createCards(limit, 50);

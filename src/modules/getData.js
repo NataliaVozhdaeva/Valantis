@@ -1,7 +1,7 @@
 import { timeStamp } from './getAuth';
 
 const getData = async (myLimit = 50, myOffset = 0) => {
-  console.log('myLimit', myLimit, 'myOffset', myOffset);
+  // console.log('myLimit', myLimit, 'myOffset', myOffset);
   try {
     const url = `http://api.valantis.store:40000/`;
     const auth = timeStamp();

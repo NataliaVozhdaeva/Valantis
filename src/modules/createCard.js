@@ -15,7 +15,7 @@ export const createCard = (title, id, price, brand) => {
   cardBrand.textContent = brand ? `Бренд:\u00A0${brand}` : 'Бренд неизвестен';
   const cardBtn = document.createElement('button');
   cardBtn.className = 'card-btn';
-  cardBtn.textContent = 'Заказать';
+  cardBtn.textContent = 'В корзину';
   const img = document.createElement('img');
   img.className = 'card-img';
   img.setAttribute('src', './assets/card-img.png');

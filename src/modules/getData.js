@@ -1,6 +1,7 @@
 import { timeStamp } from './getAuth';
 
-const getData = async () => {
+const getData = async (myLimit = 50, myOffset = 0) => {
+  console.log('myLimit', myLimit, 'myOffset', myOffset);
   try {
     const url = `http://api.valantis.store:40000/`;
     const auth = timeStamp();
@@ -14,20 +15,18 @@ const getData = async () => {
 
       body: JSON.stringify({
         action: 'get_ids',
-        params: { limit: 50 },
+        params: { limit: myLimit, offset: myOffset },
       }),
     });
-    const data = await res.json();
 
-    // console.log('data', data);
-    return data;
+    const data = await res.json();
+    return data.result;
   } catch (error) {
     console.log('error');
   }
 };
 
 const getCard = async (idsData) => {
-  // console.log('api ', idsData.length);
   try {
     const url = `http://api.valantis.store:40000/`;
     const auth = timeStamp();
@@ -44,8 +43,8 @@ const getCard = async (idsData) => {
         params: { ids: idsData },
       }),
     });
-    const data = await res.json();
 
+    const data = await res.json();
     return data.result;
   } catch (error) {
     console.log('error');

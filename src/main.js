@@ -1,4 +1,4 @@
 import './css/styles.css';
-import { createCatalog } from './modules/createCatalog';
+import { createCatalogPage } from './modules/createCatalog';
 
-createCatalog();
+createCatalogPage();

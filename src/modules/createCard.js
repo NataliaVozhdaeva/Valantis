@@ -12,7 +12,7 @@ export const createCard = (title, id, price, brand) => {
   cardPrice.textContent = `${price}\u00A0\u20BD`;
   const cardBrand = document.createElement('span');
   cardBrand.className = 'card-brand';
-  cardBrand.textContent = brand;
+  cardBrand.textContent = brand ? `Бренд:\u00A0${brand}` : 'Бренд неизвестен';
   const cardBtn = document.createElement('button');
   cardBtn.className = 'card-btn';
   cardBtn.textContent = 'Заказать';

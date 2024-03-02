@@ -1,4 +1,4 @@
 import './css/styles.css';
-import { getData } from './modules/getData';
+import { createCatalog } from './modules/createCatalog';
 
-getData();
+createCatalog();

@@ -59,7 +59,6 @@
 
   max-width: 1440px;
   margin: auto;
-  padding: 0 100px;
 }
 
 .header {
@@ -198,6 +197,12 @@
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: space-between;
+
   min-width: 248px;
   padding: 30px;
 
@@ -209,26 +214,17 @@
   box-shadow: 0 0 15px 5px var(--text);
 }
 
-.card-link {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  align-items: center;
-  justify-content: space-between;
-
-  max-width: 248px;
-}
-
 .card-id {
   align-self: start;
   order: -1;
-  font-size: 14px;
+  font-size: 10px;
 }
 
 .card-title {
   font-family: var(--merri);
-  font-size: 22px;
+  font-size: 18px;
   color: var(--text);
+  text-align: center;
 }
 
 .card-price {

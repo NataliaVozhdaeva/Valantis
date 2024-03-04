@@ -25,7 +25,7 @@ export const createCatalogPage = async (countForLimit, countForOffset) => {
   if (document.querySelectorAll('.card').length < 50) {
     const limit = 50 - document.querySelectorAll('.card').length;
 
-    await createCards(limit, 50);
+    await createCards(limit, countForOffset + limit);
   }
 
   pagination();

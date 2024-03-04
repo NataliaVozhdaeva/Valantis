@@ -1,14 +1,17 @@
 import { createCard } from './createCard';
 import { getData, getCard } from './getData';
+import { pagination } from './pagination';
+import { catalog } from './consts';
 
-const createCards = async (countForLimit = 50, countForOffset = 0) => {
+let identifier;
+
+const createCards = async (countForLimit, countForOffset) => {
   const data = await getData(countForLimit, countForOffset);
   const cardContent = await getCard(data);
 
-  const catalog = document.querySelector('.cards');
-  let identifier;
-
   cardContent.forEach((el) => {
+    //TODO упорядочить список если api будет возвращать неупорядоченный
+
     if (identifier !== el.id) {
       identifier = el.id;
       catalog.appendChild(createCard(el.product, el.id, el.price, el.brand));
@@ -16,13 +19,14 @@ const createCards = async (countForLimit = 50, countForOffset = 0) => {
   });
 };
 
-export const createCatalogPage = async () => {
-  await createCards();
+export const createCatalogPage = async (countForLimit, countForOffset) => {
+  await createCards(countForLimit, countForOffset);
 
   if (document.querySelectorAll('.card').length < 50) {
-    // console.log('alarm', document.querySelectorAll('.card').length);
-
     const limit = 50 - document.querySelectorAll('.card').length;
-    createCards(limit, 50);
+
+    await createCards(limit, 50);
   }
+
+  pagination();
 };

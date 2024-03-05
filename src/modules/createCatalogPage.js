@@ -22,11 +22,11 @@ const createCards = async (countForLimit, countForOffset) => {
 export const createCatalogPage = async (countForLimit, countForOffset) => {
   await createCards(countForLimit, countForOffset);
 
-  if (document.querySelectorAll('.card').length < 50) {
-    const limit = 50 - document.querySelectorAll('.card').length;
+  // if (document.querySelectorAll('.card').length < 50) {
+  //   const limit = 50 - document.querySelectorAll('.card').length;
 
-    await createCards(limit, countForOffset + limit);
-  }
+  //   await createCards(limit, countForOffset + limit);
+  // }
 
   pagination();
 };

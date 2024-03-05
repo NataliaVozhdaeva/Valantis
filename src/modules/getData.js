@@ -50,7 +50,32 @@ const getCard = async (idsData) => {
   }
 };
 
-export { getData, getCard };
+const getFields = async () => {
+  try {
+    const url = `http://api.valantis.store:40000/`;
+    const auth = timeStamp();
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth': auth,
+      },
+
+      body: JSON.stringify({
+        action: 'get_fields',
+        params: { field: 'brand' },
+      }),
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log('error');
+  }
+};
+
+export { getData, getCard, getFields };
 
 // Золотое кольцо с бриллиантами 16700
 

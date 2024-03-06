@@ -1,8 +1,10 @@
 import { createCatalogPage } from './createCatalogPage';
 import { catalog } from './consts';
 import { getFields } from './getData';
+import { additionalItem } from './consts';
 
 let currentPage = 1;
+// let limit = additionalItem.length ? 50 : 50 + additionalItem.length;
 let limit = 50;
 
 const nextPageBtn = document.querySelector('.pagination-btn_next');
@@ -12,12 +14,9 @@ const btnToEnd = document.querySelector('.pagination-btn_finish');
 const data = await getFields();
 const goodsAmount = data.result.length;
 
-const pagePlus = async () => {
+const pagePlus = () => {
   currentPage++;
   document.querySelector('.pagination-btn_current').textContent = currentPage;
-
-  catalog.innerHTML = '';
-  createCatalogPage(limit, limit * currentPage - limit);
 
   if (currentPage === 2) {
     prevPageBtn.removeAttribute('disabled');
@@ -28,14 +27,22 @@ const pagePlus = async () => {
     nextPageBtn.setAttribute('disabled', 'true');
     btnToEnd.setAttribute('disabled', 'true');
   }
+
+  catalog.innerHTML = '';
+
+  try {
+    additionalItem.length
+      ? createCatalogPage(limit, limit * (currentPage - 1))
+      : createCatalogPage(limit, limit * (currentPage - 1) + additionalItem.length);
+  } catch (catchID) {
+    console.error(catchID);
+    createCatalogPage(limit, limit * (currentPage - 1));
+  }
 };
 
 const pageMinus = () => {
   currentPage--;
   document.querySelector('.pagination-btn_current').textContent = currentPage;
-
-  catalog.innerHTML = '';
-  createCatalogPage(limit, limit * currentPage - limit);
 
   if (currentPage === 1) {
     prevPageBtn.setAttribute('disabled', 'true');
@@ -45,6 +52,15 @@ const pageMinus = () => {
   if (currentPage === Math.ceil(goodsAmount / limit) - 1) {
     nextPageBtn.removeAttribute('disabled');
     btnToEnd.removeAttribute('disabled');
+  }
+
+  catalog.innerHTML = '';
+
+  try {
+    createCatalogPage(limit, limit * currentPage - limit);
+  } catch (catchID) {
+    console.error(catchID);
+    createCatalogPage(limit, limit * currentPage - limit);
   }
 };
 
@@ -58,7 +74,13 @@ const pageToFirst = () => {
   document.querySelector('.pagination-btn_current').textContent = currentPage;
 
   catalog.innerHTML = '';
-  createCatalogPage(limit, limit * currentPage - limit);
+
+  try {
+    createCatalogPage(limit, limit * currentPage - limit);
+  } catch (catchID) {
+    console.error(catchID);
+    createCatalogPage(limit, limit * currentPage - limit);
+  }
 };
 
 const pageToEnd = () => {
@@ -71,10 +93,15 @@ const pageToEnd = () => {
   document.querySelector('.pagination-btn_current').textContent = currentPage;
 
   const lastLimit = goodsAmount % (currentPage - 1);
-  console.log('lastLimit ', lastLimit);
 
   catalog.innerHTML = '';
-  createCatalogPage(lastLimit, limit * currentPage - limit);
+
+  try {
+    createCatalogPage(lastLimit, limit * currentPage - limit);
+  } catch (catchID) {
+    console.error(catchID);
+    createCatalogPage(lastLimit, limit * currentPage - limit);
+  }
 };
 
 export const pagination = () => {

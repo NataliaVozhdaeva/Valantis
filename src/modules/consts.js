@@ -1,3 +1,4 @@
 const catalog = document.querySelector('.cards');
+var additionalItem = [];
 
-export { catalog };
+export { catalog, additionalItem };

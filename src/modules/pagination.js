@@ -1,18 +1,15 @@
 import { createCatalogPage } from './createCatalogPage';
-import { catalog } from './consts';
-import { getFields } from './getData';
-import { additionalItem } from './consts';
+import { catalog, limit, additionalItem, ItemsInBase } from './consts';
 
 let currentPage = 1;
-// let limit = additionalItem.length ? 50 : 50 + additionalItem.length;
-let limit = 50;
+let goodsAmount = ItemsInBase;
 
 const nextPageBtn = document.querySelector('.pagination-btn_next');
 const prevPageBtn = document.querySelector('.pagination-btn_prev');
 const btnToStart = document.querySelector('.pagination-btn_start');
 const btnToEnd = document.querySelector('.pagination-btn_finish');
-const data = await getFields();
-const goodsAmount = data.result.length;
+
+// const data = await getFields();
 
 const pagePlus = () => {
   currentPage++;
@@ -31,9 +28,9 @@ const pagePlus = () => {
   catalog.innerHTML = '';
 
   try {
-    additionalItem.length
+    additionalItem.size === 0
       ? createCatalogPage(limit, limit * (currentPage - 1))
-      : createCatalogPage(limit, limit * (currentPage - 1) + additionalItem.length);
+      : createCatalogPage(limit, limit * (currentPage - 1) + additionalItem.size);
   } catch (catchID) {
     console.error(catchID);
     createCatalogPage(limit, limit * (currentPage - 1));
@@ -57,7 +54,13 @@ const pageMinus = () => {
   catalog.innerHTML = '';
 
   try {
-    createCatalogPage(limit, limit * currentPage - limit);
+    if (additionalItem.size === 0) {
+      createCatalogPage(limit, limit * (currentPage - 1));
+    } else {
+      currentPage !== 1
+        ? createCatalogPage(limit, limit * (currentPage - 1) + additionalItem.size)
+        : createCatalogPage(limit, 0);
+    }
   } catch (catchID) {
     console.error(catchID);
     createCatalogPage(limit, limit * currentPage - limit);
@@ -97,10 +100,16 @@ const pageToEnd = () => {
   catalog.innerHTML = '';
 
   try {
-    createCatalogPage(lastLimit, limit * currentPage - limit);
+    // createCatalogPage(lastLimit, limit * currentPage - limit);
+    additionalItem.size === 0
+      ? createCatalogPage(lastLimit, limit * (currentPage - 1))
+      : createCatalogPage(lastLimit, limit * (currentPage - 1) + additionalItem.size);
   } catch (catchID) {
     console.error(catchID);
-    createCatalogPage(lastLimit, limit * currentPage - limit);
+
+    additionalItem.size === 0
+      ? createCatalogPage(lastLimit, limit * (currentPage - 1))
+      : createCatalogPage(lastLimit, limit * (currentPage - 1) + additionalItem.size);
   }
 };
 

@@ -47,28 +47,24 @@ const getCard = async (idsData) => {
 };
 
 const getFields = async () => {
-  try {
-    const url = `http://api.valantis.store:40000/`;
-    const auth = timeStamp();
+  const url = `http://api.valantis.store:40000/`;
+  const auth = timeStamp();
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth': auth,
-      },
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Auth': auth,
+    },
 
-      body: JSON.stringify({
-        action: 'get_fields',
-        params: { field: 'brand' },
-      }),
-    });
+    body: JSON.stringify({
+      action: 'get_fields',
+      params: { field: 'brand' },
+    }),
+  });
 
-    const data = await res.json();
-    return data;
-  } catch (catchID) {
-    console.log('error id', catchID);
-  }
+  const data = await res.json();
+  return data;
 };
 
 export { getData, getCard, getFields };

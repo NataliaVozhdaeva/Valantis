@@ -233,6 +233,10 @@
   font-size: 18px;
 }
 
+.card-brand {
+  font-size: 16px;
+}
+
 .card-btn {
   display: flex;
   justify-content: center;

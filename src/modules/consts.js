@@ -1,15 +1,16 @@
 import { getFields } from './getData';
 
+const additionalItem = new Set();
 const catalog = document.querySelector('.cards');
 const limit = 50;
-const getLength = async () => {
+const getInfo = async () => {
   const res = await getFields();
-
-  return res.result.length;
+  // if (!res) {
+  //   await getInfo();
+  // }
+  return res.result;
 };
-let data = await getLength();
-
-const ItemsInBase = (await data) ? data : getLength();
-let additionalItem = new Set();
-
-export { catalog, limit, additionalItem, ItemsInBase };
+const data = await getInfo();
+// const ItemsInBase = (await data) ? data.length : getInfo();
+const ItemsInBase = data.length;
+export { catalog, limit, additionalItem, ItemsInBase, data };

@@ -9,8 +9,6 @@ const prevPageBtn = document.querySelector('.pagination-btn_prev');
 const btnToStart = document.querySelector('.pagination-btn_start');
 const btnToEnd = document.querySelector('.pagination-btn_finish');
 
-// const data = await getFields();
-
 const pagePlus = () => {
   currentPage++;
   document.querySelector('.pagination-btn_current').textContent = currentPage;

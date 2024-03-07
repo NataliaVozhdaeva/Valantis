@@ -109,7 +109,7 @@
 
 .main {
   display: grid;
-  grid-template-rows: 400px 150px 1fr;
+  grid-template-rows: 400px auto 1fr;
   gap: 50px;
 
   margin-bottom: 80px;
@@ -137,7 +137,7 @@
   margin-bottom: 20px;
 }
 
-.select-wrapper:not(:nth-child(2))::before {
+.select-wrapper:last-child:before {
   content: '';
   position: absolute;
   z-index: 2;
@@ -160,7 +160,8 @@
 
 .filter-item,
 .filter-item_pricemin,
-.filter-item_pricemax {
+.filter-item_pricemax,
+.filter-item_name {
   position: relative;
   display: flex;
   justify-content: flex-start;
@@ -176,17 +177,45 @@
 }
 
 .filter-item_pricemin,
-.filter-item_pricemax {
+.filter-item_pricemax,
+.filter-item_name {
   background-color: var(--default-gray);
 }
 
 .filter-item_pricemin:focus-visible,
-.filter-item_pricemax:focus-visible {
+.filter-item_pricemax:focus-visible,
+.filter-item_name:focus-visible {
   outline: var(--btn) solid 1px;
 }
 
 .filter-item:hover {
   background-color: var(--cards);
+  cursor: pointer;
+}
+
+.btn_filter {
+  grid-column: 2/3;
+  margin: auto;
+  min-width: 200px;
+
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+
+  font-size: 16px;
+  color: var(--btn);
+
+  background-color: var(--cards);
+  border: var(--btn) solid 1px;
+  border-radius: 10px;
+
+  transition: 0.3s;
+}
+
+.btn_filter:hover {
+  color: var(--cards);
+
+  background-color: var(--btn);
   cursor: pointer;
 }
 

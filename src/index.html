@@ -38,12 +38,7 @@
         <section class="filter">
           <div class="select-wrapper">
             <label for="name">Название</label>
-            <select class="filter-item filter-item_name" name="name">
-              <option value="all" selected>Все</option>
-              <option value="mono">1</option>
-              <option value="bright">2</option>
-              <option value="pastel">3</option>
-            </select>
+            <input type="text" class="filter-item filter-item_name" name="name" />
           </div>
           <div class="select-wrapper">
             <label for="price">Цена</label>
@@ -62,6 +57,7 @@
               <option value="peonies">2</option>
             </select>
           </div>
+          <button class="btn btn_filter">Найти</button>
         </section>
         <section class="catalog">
           <ul class="cards list"></ul>

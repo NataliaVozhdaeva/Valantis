@@ -5,10 +5,10 @@ let counter = 0;
 const getData = async (myLimit = 50, myOffset = 0) => {
   const currentLimit = myLimit;
   const currentOffset = myOffset;
-  try {
-    const url = `https://api.valantis.store:41000/`;
-    const auth = timeStamp();
 
+  const url = 'http://api.valantis.store:40000/';
+  const auth = timeStamp();
+  try {
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -21,32 +21,29 @@ const getData = async (myLimit = 50, myOffset = 0) => {
         params: { limit: currentLimit, offset: currentOffset },
       }),
     });
-    console.log('data ', await res.clone().text());
-    const data = await res.json();
 
-    if (typeof data !== 'object') {
-      while (counter < 10) {
-        counter++;
+    if (res.ok) {
+      const data = await res.json();
 
-        await getData(currentLimit, currentOffset);
+      return await data.result;
+    } else {
+      // console.log('get ids ', await res.clone().text());
+      counter++;
+      if (counter < 5) {
+        return await getData(currentLimit, currentOffset);
       }
     }
-
-    // console.log('data ', data.result);
-    return data.result;
   } catch (catchID) {
-    console.error(catchID);
-    // getData();
+    console.error('catchID', catchID);
   }
 };
 
 const getCard = async (idsData) => {
   const request = idsData;
+  const url = 'http://api.valantis.store:40000/';
+  const auth = timeStamp();
 
   try {
-    const url = `https://api.valantis.store:41000/`;
-    const auth = timeStamp();
-
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -59,31 +56,26 @@ const getCard = async (idsData) => {
         params: { ids: request },
       }),
     });
-    console.log('getCards ', await res.clone().text());
-    const data = await res.json();
 
-    if (typeof data !== 'object') {
-      while (counter < 10) {
-        counter++;
-
-        await getCard(request);
+    if (res.ok) {
+      const data = await res.json();
+      return await data.result;
+    } else {
+      // console.log('getCards ', await res.clone().text());
+      counter++;
+      if (counter < 5) {
+        return await getCard(request);
       }
     }
-
-    return data.result;
   } catch (catchID) {
-    console.log('error id', catchID);
-    // console.log('request', request);
-
-    // getCard(request);
+    console.error('catchID', catchID);
   }
 };
 
 const getFields = async () => {
+  const url = 'http://api.valantis.store:40000/';
+  const auth = timeStamp();
   try {
-    const url = `https://api.valantis.store:41000/`;
-    const auth = timeStamp();
-
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -97,44 +89,46 @@ const getFields = async () => {
       }),
     });
 
-    const data = await res.json();
-    // console.log('fields ', await res.clone().text());
-
-    return data;
+    if (res.ok) {
+      const data = await res.json();
+      return await data;
+    } else {
+      counter++;
+      if (counter < 5) {
+        return await getFields();
+      }
+    }
   } catch (catchID) {
-    console.log('error id', catchID);
-    // getFields();
+    console.error('catchID', catchID);
   }
 };
 
 const getFilteredArray = async (userRequest) => {
   const request = userRequest;
-  console.log('filter request ', request);
+  // console.log('filter request ', request);
+
+  const url = 'http://api.valantis.store:40000/';
+  const auth = timeStamp();
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Auth': auth,
+    },
+
+    body: JSON.stringify({
+      action: 'filter',
+      params: { product: request },
+    }),
+  });
+
   try {
-    const url = `https://api.valantis.store:41000/`;
-    const auth = timeStamp();
-
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth': auth,
-      },
-
-      body: JSON.stringify({
-        action: 'filter',
-        params: { product: request },
-      }),
-    });
-    console.log('filter ', await res.clone().text());
+    // console.log('filter ', await res.clone().text());
     const data = await res.json();
-
-    // console.log('filter ', await res.text());
-
-    return data.result;
+    return await data.result;
   } catch (catchID) {
-    console.log('error id', catchID);
-    // getFilteredArray(request);
+    console.error('catchID', catchID);
   }
 };
 

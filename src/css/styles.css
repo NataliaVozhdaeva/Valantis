@@ -353,6 +353,13 @@
   opacity: 0.5;
 }
 
+.empty-message {
+  grid-column: 2/5;
+
+  font-size: 22px;
+  text-align: center;
+}
+
 @keyframes hover {
   0% {
     width: 0;

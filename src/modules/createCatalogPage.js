@@ -11,7 +11,7 @@ const getFilteredCards = async (userRequest) => {
   const request = userRequest;
   try {
     const data = await getFilteredArray(request);
-    console.log('getFilteredCards', data);
+    // console.log('getFilteredCards', data);
     catalog.innerHTML = '';
     const info = await getCard(data);
 
@@ -29,15 +29,16 @@ const getInfo = async (countForLimit, countForOffset) => {
 
   try {
     const data = await getData(currentLimit, currentOffset);
-    console.log('data в getInfo ', data);
-    if (!data) {
-      while (counter < 10) {
-        counter++;
-        await getInfo(currentLimit, currentOffset);
-      }
-    }
+
+    // if (!data) {
+    //   counter++;
+    //   if (counter < 5) {
+    //     await getInfo(currentLimit, currentOffset);
+    //   }
+    // }
     const info = await getCard(data);
 
+    console.log('info ', info);
     return info;
   } catch (catchID) {
     console.error(catchID);
@@ -48,26 +49,32 @@ const getInfo = async (countForLimit, countForOffset) => {
 
 const createCards = async (cardContent, isAdded = false) => {
   const content = await cardContent;
-  console.log('cardContent ', cardContent);
-  if (!content) {
-    while (counter < 10) {
-      counter++;
-      await createCards();
-    }
-  }
+  // if (!content) {
+  //   while (counter < 10) {
+  //     counter++;
+  //     await createCards();
+  //   }
+  // }
 
-  cardContent.forEach((el) => {
-    //TODO упорядочить список если api будет возвращать неупорядоченный
+  if (content.length > 0) {
+    content.forEach((el) => {
+      //TODO упорядочить список если api будет возвращать неупорядоченный
 
-    if (identifier !== el.id) {
-      identifier = el.id;
+      if (identifier !== el.id) {
+        identifier = el.id;
 
-      if (isAdded) {
-        additionalItem.add(el.id);
+        if (isAdded) {
+          additionalItem.add(el.id);
+        }
+        catalog.appendChild(createCard(el.product, el.id, el.price, el.brand));
       }
-      catalog.appendChild(createCard(el.product, el.id, el.price, el.brand));
-    }
-  });
+    });
+  } else {
+    const emptyCatalogCard = document.createElement('li');
+    emptyCatalogCard.className = 'empty-message';
+    emptyCatalogCard.textContent = 'Похоже, в каталоге нет того, что вы ищите :(';
+    catalog.appendChild(emptyCatalogCard);
+  }
 };
 
 export const createCatalogPage = async (countForLimit = 50, countForOffset = 0, isFiltered = null) => {

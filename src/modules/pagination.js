@@ -1,8 +1,17 @@
+import { getFields } from './getData';
 import { createCatalogPage } from './createCatalogPage';
-import { catalog, limit, additionalItem, ItemsInBase } from './consts';
+import { catalog, limit, additionalItem, filterTerm } from './consts';
+
+const getInfo = async () => {
+  const res = await getFields();
+  return await res.result.length;
+};
 
 let currentPage = 1;
-let goodsAmount = ItemsInBase;
+let goodsAmount = await getInfo();
+const lastPage = Math.ceil(goodsAmount / limit);
+
+console.log('goodsAmount ', goodsAmount);
 
 const nextPageBtn = document.querySelector('.pagination-btn_next');
 const prevPageBtn = document.querySelector('.pagination-btn_prev');
@@ -11,6 +20,8 @@ const btnToEnd = document.querySelector('.pagination-btn_finish');
 
 const pagePlus = () => {
   currentPage++;
+  console.log('page+ ', filterTerm);
+
   document.querySelector('.pagination-btn_current').textContent = currentPage;
 
   if (currentPage === 2) {
@@ -18,7 +29,7 @@ const pagePlus = () => {
     btnToStart.removeAttribute('disabled');
   }
 
-  if (currentPage === Math.ceil(goodsAmount / limit)) {
+  if (currentPage === lastPage) {
     nextPageBtn.setAttribute('disabled', 'true');
     btnToEnd.setAttribute('disabled', 'true');
   }
@@ -44,7 +55,7 @@ const pageMinus = () => {
     btnToStart.setAttribute('disabled', 'true');
   }
 
-  if (currentPage === Math.ceil(goodsAmount / limit) - 1) {
+  if (currentPage === lastPage - 1) {
     nextPageBtn.removeAttribute('disabled');
     btnToEnd.removeAttribute('disabled');
   }
@@ -90,7 +101,7 @@ const pageToEnd = () => {
   prevPageBtn.removeAttribute('disabled');
   btnToStart.removeAttribute('disabled');
 
-  currentPage = Math.ceil(goodsAmount / limit);
+  currentPage = lastPage;
   document.querySelector('.pagination-btn_current').textContent = currentPage;
 
   const lastLimit = goodsAmount % (currentPage - 1);
@@ -100,8 +111,8 @@ const pageToEnd = () => {
   try {
     // createCatalogPage(lastLimit, limit * currentPage - limit);
     additionalItem.size === 0
-      ? createCatalogPage(lastLimit, limit * (currentPage - 1))
-      : createCatalogPage(lastLimit, limit * (currentPage - 1) + additionalItem.size);
+      ? createCatalogPage(lastLimit, limit * (currentPage - 1), null, lastPage)
+      : createCatalogPage(lastLimit, limit * (currentPage - 1) + additionalItem.size, null, lastPage);
   } catch (catchID) {
     console.error(catchID);
 

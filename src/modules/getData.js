@@ -1,12 +1,13 @@
 import { timeStamp } from './getAuth';
 
-let counter = 0;
+const actualUrl = 'http://api.valantis.store:40000/';
 
 const getData = async (myLimit = 50, myOffset = 0) => {
+  let counter = 0;
   const currentLimit = myLimit;
   const currentOffset = myOffset;
 
-  const url = 'http://api.valantis.store:40000/';
+  const url = actualUrl;
   const auth = timeStamp();
   try {
     const res = await fetch(url, {
@@ -28,6 +29,7 @@ const getData = async (myLimit = 50, myOffset = 0) => {
       return await data.result;
     } else {
       // console.log('get ids ', await res.clone().text());
+      console.log(res.statusText);
       counter++;
       if (counter < 5) {
         return await getData(currentLimit, currentOffset);
@@ -39,8 +41,9 @@ const getData = async (myLimit = 50, myOffset = 0) => {
 };
 
 const getCard = async (idsData) => {
+  let counter = 0;
   const request = idsData;
-  const url = 'http://api.valantis.store:40000/';
+  const url = actualUrl;
   const auth = timeStamp();
 
   try {
@@ -62,6 +65,7 @@ const getCard = async (idsData) => {
       return await data.result;
     } else {
       // console.log('getCards ', await res.clone().text());
+      console.log(res.statusText);
       counter++;
       if (counter < 5) {
         return await getCard(request);
@@ -73,7 +77,8 @@ const getCard = async (idsData) => {
 };
 
 const getFields = async () => {
-  const url = 'http://api.valantis.store:40000/';
+  let counter = 0;
+  const url = actualUrl;
   const auth = timeStamp();
   try {
     const res = await fetch(url, {
@@ -93,6 +98,7 @@ const getFields = async () => {
       const data = await res.json();
       return await data;
     } else {
+      console.log(res.statusText);
       counter++;
       if (counter < 5) {
         return await getFields();
@@ -104,29 +110,37 @@ const getFields = async () => {
 };
 
 const getFilteredArray = async (userRequest) => {
+  let counter = 0;
   const request = userRequest;
-  // console.log('filter request ', request);
 
-  const url = 'http://api.valantis.store:40000/';
+  const url = actualUrl;
   const auth = timeStamp();
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Auth': auth,
-    },
-
-    body: JSON.stringify({
-      action: 'filter',
-      params: { product: request },
-    }),
-  });
-
   try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth': auth,
+      },
+
+      body: JSON.stringify({
+        action: 'filter',
+        params: { product: request, limit: '50', offset: '0' },
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+
+      return await data.result;
+    } else {
+      console.log(res.statusText);
+      counter++;
+      if (counter < 5) {
+        return await getFields();
+      }
+    }
     // console.log('filter ', await res.clone().text());
-    const data = await res.json();
-    return await data.result;
   } catch (catchID) {
     console.error('catchID', catchID);
   }

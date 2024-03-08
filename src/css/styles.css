@@ -122,7 +122,7 @@
 
 .filter {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 50px;
 }
 
@@ -135,6 +135,10 @@
 
 .select-wrapper label {
   margin-bottom: 20px;
+}
+
+.select-wrapper:first-child {
+  grid-column: 1 / span 2;
 }
 
 .select-wrapper:last-child:before {
@@ -152,16 +156,7 @@
   transform: rotate(-45deg);
 }
 
-.range-wrapper {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.filter-item,
-.filter-item_pricemin,
-.filter-item_pricemax,
-.filter-item_name {
+.filter-item {
   position: relative;
   display: flex;
   justify-content: flex-start;
@@ -176,31 +171,32 @@
   appearance: none;
 }
 
-.filter-item_pricemin,
-.filter-item_pricemax,
+.filter-item_price,
 .filter-item_name {
   background-color: var(--default-gray);
 }
 
-.filter-item_pricemin:focus-visible,
-.filter-item_pricemax:focus-visible,
+.filter-item_brand:hover {
+  cursor: pointer;
+}
+
+.filter-item_price:focus-visible,
 .filter-item_name:focus-visible {
   outline: var(--btn) solid 1px;
 }
 
-.filter-item:hover {
+.filter-item_price:hover,
+.filter-item_name:hover {
   background-color: var(--cards);
-  cursor: pointer;
+  cursor: text;
 }
 
 .btn_filter {
-  grid-column: 2/3;
-  margin: auto;
-  min-width: 200px;
-
+  align-self: self-end;
   display: flex;
   justify-content: center;
-  padding: 24px;
+  height: 60px;
+  align-items: center;
 
   font-size: 16px;
   color: var(--btn);

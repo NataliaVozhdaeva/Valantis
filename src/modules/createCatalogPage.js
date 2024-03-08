@@ -1,25 +1,25 @@
 import { createCard } from './createCard';
 import { getData, getCard, getFilteredArray } from './getData';
 import { pagination } from './pagination';
-import { catalog, limit, additionalItem, ItemsInBase } from './consts';
+import { catalog, additionalItem } from './consts';
 import { filterItems } from './filterCards';
 
 let identifier;
-let counter = 0;
 
 const getFilteredCards = async (userRequest) => {
   const request = userRequest;
   try {
     const data = await getFilteredArray(request);
-    // console.log('getFilteredCards', data);
-    catalog.innerHTML = '';
     const info = await getCard(data);
+
+    catalog.innerHTML = '';
+    console.log('info ', info);
+    console.log('info length ', info.length);
 
     return info;
   } catch (error) {
     console.error;
     identifier = null;
-    // await getFilteredCards();
   }
 };
 
@@ -29,32 +29,17 @@ const getInfo = async (countForLimit, countForOffset) => {
 
   try {
     const data = await getData(currentLimit, currentOffset);
-
-    // if (!data) {
-    //   counter++;
-    //   if (counter < 5) {
-    //     await getInfo(currentLimit, currentOffset);
-    //   }
-    // }
     const info = await getCard(data);
 
-    console.log('info ', info);
     return info;
   } catch (catchID) {
     console.error(catchID);
     identifier = null;
-    await getInfo(currentLimit, currentOffset);
   }
 };
 
 const createCards = async (cardContent, isAdded = false) => {
   const content = await cardContent;
-  // if (!content) {
-  //   while (counter < 10) {
-  //     counter++;
-  //     await createCards();
-  //   }
-  // }
 
   if (content.length > 0) {
     content.forEach((el) => {
@@ -77,16 +62,20 @@ const createCards = async (cardContent, isAdded = false) => {
   }
 };
 
-export const createCatalogPage = async (countForLimit = 50, countForOffset = 0, isFiltered = null) => {
+export const createCatalogPage = async (
+  countForLimit = 50,
+  countForOffset = 0,
+  isFiltered = null,
+  isLastPage = null
+) => {
   const filterRequest = isFiltered;
+  const lastPageNum = isLastPage;
   const data = filterRequest ? await getFilteredCards(filterRequest) : await getInfo(countForLimit, countForOffset);
   await createCards(data);
 
-  const lastPage = Math.ceil(ItemsInBase / limit);
-
   if (
     document.getElementsByClassName('card').length < 50 &&
-    document.querySelector('.pagination-btn_current').textContent != lastPage &&
+    document.querySelector('.pagination-btn_current').textContent != lastPageNum &&
     !isFiltered
   ) {
     // В запросе на первые 50 id для первой страницы возвращается одинаковый id под индексами 25 и 26 (58a3eff4-e06d-468d-9130-d3092a2574a5)
@@ -96,7 +85,7 @@ export const createCatalogPage = async (countForLimit = 50, countForOffset = 0, 
 
     const additionalimit = 50 - document.querySelectorAll('.card').length;
     const additionatData = await getInfo(additionalimit, countForOffset + countForLimit);
-    createCards(additionatData, true);
+    await createCards(additionatData, true);
   }
 
   pagination();

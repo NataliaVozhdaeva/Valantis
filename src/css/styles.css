@@ -67,7 +67,7 @@
 
 .nav {
   display: grid;
-  grid-template-columns: 178px 1fr 140px 25px;
+  grid-template-columns: 178px 0px 1fr 140px 25px;
   align-items: center;
   justify-items: stretch;
   gap: 35px;

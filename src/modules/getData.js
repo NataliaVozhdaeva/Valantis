@@ -1,6 +1,6 @@
 import { timeStamp } from './getAuth';
 
-const actualUrl = 'http://api.valantis.store:40000/';
+const actualUrl = 'https://api.valantis.store:41000/';
 
 const getData = async (myLimit = 50, myOffset = 0) => {
   let counter = 0;

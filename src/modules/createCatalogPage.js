@@ -2,6 +2,7 @@ import { createCard } from './createCard';
 import { getData, getCard, getFilteredProducts, getFilteredBrands, getFilteredPrices } from './getData';
 import { pagination } from './pagination';
 import { catalog, lastPageNum, limit, filters } from './consts';
+import { createLoader } from './createLoader';
 import { filterItems } from './filterCards';
 
 let identifier;
@@ -12,6 +13,8 @@ let lastPageItemsAmount = 0;
 
 let currentFilteredPage = 1;
 let lastFilteredPage;
+
+// const loader = document.getElementById('cards_loader');
 
 const createFilterPaginatinBtn = (classNames, text = 1) => {
   const filteredPaginationBtn = document.createElement('btn');
@@ -27,18 +30,13 @@ const pagePlusFiltered = () => {
 
   if (currentFilteredPage === lastFilteredPage) {
     createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + lastPageItemsAmount));
+    console.log('plus to ', filteredItemIndex, filteredItemIndex + limit, 'i ', filteredItemIndex);
   } else {
     createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + limit));
+    console.log('plus to ', filteredItemIndex, filteredItemIndex + limit, 'i ', filteredItemIndex);
+
     filteredItemIndex = additionalItem.size + limit * currentFilteredPage;
   }
-};
-
-const pageToEndFiltered = () => {
-  currentFilteredPage = lastFilteredPage;
-  paginationForFiltered(currentFilteredPage);
-  catalog.innerHTML = '';
-  createCards(filteredCatalog.slice(filteredCatalog.length - lastPageItemsAmount, filteredCatalog.length));
-  filteredItemIndex = filteredCatalog.length - additionalItem.size - 1 - lastPageItemsAmount;
 };
 
 const pageMinusFiltered = () => {
@@ -51,16 +49,29 @@ const pageMinusFiltered = () => {
     createCards(filteredCatalog.slice(0, limit + additionalItem.size));
     filteredItemIndex = 0;
   } else {
-    createCards(filteredCatalog.slice(filteredItemIndex - limit, filteredItemIndex));
+    createCards(filteredCatalog.slice(filteredItemIndex - limit * 2, filteredItemIndex - limit));
+    console.log('minus from ', filteredItemIndex - limit, filteredItemIndex, 'i ', filteredItemIndex);
+
     filteredItemIndex = filteredItemIndex - limit;
   }
+};
+
+const pageToEndFiltered = () => {
+  currentFilteredPage = lastFilteredPage;
+  paginationForFiltered(currentFilteredPage);
+  catalog.innerHTML = '';
+  createCards(filteredCatalog.slice(filteredCatalog.length - lastPageItemsAmount, filteredCatalog.length));
+
+  console.log('end to ', filteredCatalog.length - lastPageItemsAmount, filteredCatalog.length, 'i ', filteredItemIndex);
+  filteredItemIndex = filteredCatalog.length - lastPageItemsAmount;
+  console.log('last i ', filteredItemIndex);
 };
 
 const pageToStartFiltered = () => {
   currentFilteredPage = 1;
   paginationForFiltered(currentFilteredPage);
   catalog.innerHTML = '';
-  createCards(filteredCatalog.slice(0, limit + additionalItem.size - 1));
+  createCards(filteredCatalog.slice(0, limit + additionalItem.size));
   filteredItemIndex = 0;
 };
 
@@ -151,7 +162,8 @@ const createCards = async (cardContent, isAdded = false) => {
         if (isAdded) {
           additionalItem.add(el.id);
         }
-        catalog.appendChild(createCard(el.product, el.id, el.price, el.brand));
+
+        catalog.prepend(createCard(el.product, el.id, el.price, el.brand));
       }
     });
   } else {
@@ -163,6 +175,7 @@ const createCards = async (cardContent, isAdded = false) => {
 };
 
 export const createCatalogPage = async (countForLimit = limit, countForOffset = 0, isFiltered = null) => {
+  catalog.append(createLoader());
   filteredItemIndex = limit;
 
   const filterSubmit = document.querySelectorAll('.btn_filter');
@@ -179,6 +192,7 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
   const data = filterRequest ? await getFilteredCards(filterRequest) : await getInfo(countForLimit, countForOffset);
   isFiltered ? await createCards(data.slice(0, limit)) : await createCards(data);
 
+  document.getElementById('cards_loader').classList.add('hidden');
   // В запросе на первые 50 id для первой страницы возвращается одинаковый id под индексами 25 и 26 (58a3eff4-e06d-468d-9130-d3092a2574a5)
   // (и на каждый приходится по 2 карточки в запросе айтемов - то есть 4 карточки "Золотые серьги СССР с бриллиантами")
   // => приходится дозапрашивать еще одну карточку (из следующих 50) и сдвигать оффсет.
@@ -189,6 +203,9 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
     document.getElementsByClassName('card').length < limit &&
     document.querySelector('.pagination-btn_current').textContent != lastPageNum
   ) {
+    document.getElementById('cards_loader').classList.remove('hidden');
+    document.getElementById('cards_loader').classList.add('additional');
+
     const additionalimit = limit - document.querySelectorAll('.card').length;
     const additionatData = await getInfo(additionalimit, countForOffset + countForLimit);
     await createCards(additionatData, true);
@@ -207,6 +224,9 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
     await createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + additionalimit), true);
     filteredItemIndex = filteredItemIndex + additionalimit;
   }
+
+  document.getElementById('cards_loader').classList.add('hidden');
+  document.getElementById('cards_loader').classList.remove('additional');
 
   isFiltered ? paginationForFiltered(currentFilteredPage) : pagination();
   filterSubmit.forEach((el) => {

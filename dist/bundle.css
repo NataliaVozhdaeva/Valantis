@@ -618,7 +618,7 @@
   }
 
   .nav.show {
-    grid-template-columns: 150px 1fr 150px;
+    grid-template-columns: 70px 1fr 70px;
     transform: translateX(0px);
   }
 

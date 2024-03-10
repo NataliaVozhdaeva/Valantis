@@ -30,11 +30,8 @@ const pagePlusFiltered = () => {
 
   if (currentFilteredPage === lastFilteredPage) {
     createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + lastPageItemsAmount));
-    console.log('plus to ', filteredItemIndex, filteredItemIndex + limit, 'i ', filteredItemIndex);
   } else {
     createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + limit));
-    console.log('plus to ', filteredItemIndex, filteredItemIndex + limit, 'i ', filteredItemIndex);
-
     filteredItemIndex = additionalItem.size + limit * currentFilteredPage;
   }
 };
@@ -50,8 +47,6 @@ const pageMinusFiltered = () => {
     filteredItemIndex = 0;
   } else {
     createCards(filteredCatalog.slice(filteredItemIndex - limit * 2, filteredItemIndex - limit));
-    console.log('minus from ', filteredItemIndex - limit, filteredItemIndex, 'i ', filteredItemIndex);
-
     filteredItemIndex = filteredItemIndex - limit;
   }
 };
@@ -61,10 +56,7 @@ const pageToEndFiltered = () => {
   paginationForFiltered(currentFilteredPage);
   catalog.innerHTML = '';
   createCards(filteredCatalog.slice(filteredCatalog.length - lastPageItemsAmount, filteredCatalog.length));
-
-  console.log('end to ', filteredCatalog.length - lastPageItemsAmount, filteredCatalog.length, 'i ', filteredItemIndex);
   filteredItemIndex = filteredCatalog.length - lastPageItemsAmount;
-  console.log('last i ', filteredItemIndex);
 };
 
 const pageToStartFiltered = () => {

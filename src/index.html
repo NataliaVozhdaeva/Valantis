@@ -37,22 +37,19 @@
         <section class="hero"></section>
         <section class="filter">
           <div class="select-wrapper">
-            <label for="name">Название</label>
+            <button class="btn btn_filter btn_filter__name">Искать в названии</button>
             <input type="text" class="filter-item filter-item_name" name="name" />
           </div>
           <div class="select-wrapper">
-            <label for="price">Цена</label>
+            <button class="btn btn_filter btn_filter__price">Искать по цене</button>
             <input name="price" class="filter-item filter-item_price" />
           </div>
           <div class="select-wrapper">
-            <label for="brand">Бренд</label>
+            <button class="btn btn_filter btn_filter__brand">Искать бренд</button>
             <select class="filter-item filter-item_brand" name="brand">
               <option value="all" selected="true">Все</option>
-              <option value="roses">1</option>
-              <option value="peonies">2</option>
             </select>
           </div>
-          <button class="btn btn_filter">Найти</button>
         </section>
         <section class="catalog">
           <ul class="cards list"></ul>

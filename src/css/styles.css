@@ -122,14 +122,14 @@
 
 .filter {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 50px;
 }
 
 .select-wrapper {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 20px;
 }
 
@@ -137,16 +137,12 @@
   margin-bottom: 20px;
 }
 
-.select-wrapper:first-child {
-  grid-column: 1 / span 2;
-}
-
 .select-wrapper:last-child:before {
   content: '';
   position: absolute;
   z-index: 2;
   right: 18px;
-  top: calc(50% + 8px);
+  bottom: 24px;
 
   width: 10px;
   height: 10px;
@@ -192,11 +188,12 @@
 }
 
 .btn_filter {
-  align-self: self-end;
   display: flex;
   justify-content: center;
-  height: 60px;
   align-items: center;
+
+  padding: 15px;
+  width: 100%;
 
   font-size: 16px;
   color: var(--btn);

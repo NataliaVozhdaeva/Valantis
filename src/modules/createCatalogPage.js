@@ -1,5 +1,5 @@
 import { createCard } from './createCard';
-import { getData, getCard, getFilteredArray } from './getData';
+import { getData, getCard, getFilteredArray, getFilteredBrands } from './getData';
 import { pagination } from './pagination';
 import { catalog, additionalItem, lastPageNum, limit } from './consts';
 import { filterItems } from './filterCards';
@@ -105,7 +105,7 @@ const getFilteredCards = async (userRequest) => {
   filteredCatalog.length = 0;
   const request = userRequest;
 
-  const data = await getFilteredArray(request);
+  const data = await getFilteredBrands(request);
   const info = await getCard(data);
 
   console.log('info ', info);
@@ -151,8 +151,11 @@ const createCards = async (cardContent, isAdded = false) => {
 };
 
 export const createCatalogPage = async (countForLimit = limit, countForOffset = 0, isFiltered = null) => {
-  const filterSubmit = document.querySelector('.btn_filter');
-  filterSubmit.setAttribute('disabled', 'true');
+  const filterSubmit = document.querySelectorAll('.btn_filter');
+  filterSubmit.forEach((el) => {
+    el.setAttribute('disabled', 'true');
+  });
+
   const filterRequest = isFiltered;
 
   filteredItemIndex = limit;
@@ -187,5 +190,7 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
   }
 
   isFiltered ? paginationForFiltered(currentFilteredPage) : pagination();
-  filterSubmit.removeAttribute('disabled');
+  filterSubmit.forEach((el) => {
+    el.removeAttribute('disabled');
+  });
 };

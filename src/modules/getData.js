@@ -90,7 +90,7 @@ const getFields = async () => {
 
       body: JSON.stringify({
         action: 'get_fields',
-        params: { field: 'product' },
+        params: { field: 'brand' },
       }),
     });
 
@@ -125,7 +125,7 @@ const getFilteredArray = async (userRequest) => {
 
       body: JSON.stringify({
         action: 'filter',
-        params: { product: request, limit: '50', offset: '0' },
+        params: { price: 17500.0 },
       }),
     });
 
@@ -146,4 +146,41 @@ const getFilteredArray = async (userRequest) => {
   }
 };
 
-export { getData, getCard, getFields, getFilteredArray };
+const getFilteredBrands = async (userRequest) => {
+  let counter = 0;
+  const request = userRequest;
+
+  const url = actualUrl;
+  const auth = timeStamp();
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth': auth,
+      },
+
+      body: JSON.stringify({
+        action: 'filter',
+        params: { brand: request },
+      }),
+    });
+
+    if (res.ok) {
+      console.log('filter ', await res.clone().text());
+      const data = await res.json();
+
+      return await data.result;
+    } else {
+      console.log(res.statusText);
+      counter++;
+      if (counter < 5) {
+        return await getFields();
+      }
+    }
+  } catch (catchID) {
+    console.error('catchID', catchID);
+  }
+};
+
+export { getData, getCard, getFields, getFilteredArray, getFilteredBrands };

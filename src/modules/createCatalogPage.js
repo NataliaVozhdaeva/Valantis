@@ -1,7 +1,7 @@
 import { createCard } from './createCard';
-import { getData, getCard, getFilteredArray, getFilteredBrands } from './getData';
+import { getData, getCard, getFilteredProducts, getFilteredBrands, getFilteredPrices } from './getData';
 import { pagination } from './pagination';
-import { catalog, additionalItem, lastPageNum, limit } from './consts';
+import { catalog, additionalItem, lastPageNum, limit, filters } from './consts';
 import { filterItems } from './filterCards';
 
 let identifier;
@@ -104,8 +104,22 @@ const paginationForFiltered = (currentFilteredPage) => {
 const getFilteredCards = async (userRequest) => {
   filteredCatalog.length = 0;
   const request = userRequest;
+  let data;
 
-  const data = await getFilteredBrands(request);
+  switch (userRequest.filterBy) {
+    case 'brand':
+      data = await getFilteredBrands(request.value);
+      break;
+
+    case 'price':
+      data = await getFilteredPrices(request.value);
+      break;
+
+    default:
+      data = await getFilteredProducts(request.value);
+      break;
+  }
+
   const info = await getCard(data);
 
   console.log('info ', info);
@@ -151,14 +165,18 @@ const createCards = async (cardContent, isAdded = false) => {
 };
 
 export const createCatalogPage = async (countForLimit = limit, countForOffset = 0, isFiltered = null) => {
+  filteredItemIndex = limit;
+
   const filterSubmit = document.querySelectorAll('.btn_filter');
+  const filterRequest = isFiltered;
+
+  filters.forEach((el) => {
+    el.value = '';
+  });
+
   filterSubmit.forEach((el) => {
     el.setAttribute('disabled', 'true');
   });
-
-  const filterRequest = isFiltered;
-
-  filteredItemIndex = limit;
 
   const data = filterRequest ? await getFilteredCards(filterRequest) : await getInfo(countForLimit, countForOffset);
   isFiltered ? await createCards(data.slice(0, limit)) : await createCards(data);
@@ -177,6 +195,9 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
     const additionatData = await getInfo(additionalimit, countForOffset + countForLimit);
     await createCards(additionatData, true);
   }
+
+  // В отфильтрованных данных этот баг тоже есть, поэтому нужна доп.проверка.
+  // Мне кажется, этот вопрос стоило бы решить на стороне бэка, чтобы не монструозить тут...
 
   if (
     isFiltered &&

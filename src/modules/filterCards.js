@@ -1,18 +1,31 @@
 import { createCatalogPage } from './createCatalogPage';
-import { limit, catalog } from './consts';
+import { limit, catalog, filters } from './consts';
 
-// const applyBtn = document.querySelector('.btn_filter');
-// const filterByNameField = document.querySelector('.filter-item_name');
+const filterSection = document.querySelector('.filter');
 
-const searchBrandsBtn = document.querySelector('.btn_filter__brand');
-const filterByBrands = document.querySelector('.filter-item_brand');
-
-const filterItems = () => {
-  catalog.innerHTML = '';
-  const request = filterByBrands.value;
-  createCatalogPage(limit, 0, request);
+const getCategory = (filterKey) => {
+  let filterValue;
+  filters.forEach((el) => {
+    if (el.dataset.filter === filterKey) {
+      filterValue = el.value;
+    }
+  });
+  return filterValue;
 };
 
-searchBrandsBtn.addEventListener('click', filterItems);
+const filterItems = (e) => {
+  const element = e.target;
+  if (element.classList.contains('btn')) {
+    catalog.innerHTML = '';
+
+    const filterKey = e.target.dataset.filter;
+    const filterValue = getCategory(filterKey);
+    const request = { filterBy: filterKey, value: filterValue };
+
+    request ? createCatalogPage(limit, 0, request) : createCatalogPage(limit, 0, false);
+  }
+};
+
+filterSection.addEventListener('click', filterItems);
 
 export { filterItems };

@@ -37,17 +37,17 @@
         <section class="hero"></section>
         <section class="filter">
           <div class="select-wrapper">
-            <button class="btn btn_filter btn_filter__name">Искать в названии</button>
-            <input type="text" class="filter-item filter-item_name" name="name" />
+            <button class="btn btn_filter btn_filter__name" data-filter="product">Искать в названии</button>
+            <input type="text" class="filter-item filter-item_name" name="name" data-filter="product" />
           </div>
           <div class="select-wrapper">
-            <button class="btn btn_filter btn_filter__price">Искать по цене</button>
-            <input name="price" class="filter-item filter-item_price" />
+            <button class="btn btn_filter btn_filter__price" data-filter="price">Искать по цене</button>
+            <input name="price" class="filter-item filter-item_price" data-filter="price" />
           </div>
           <div class="select-wrapper">
-            <button class="btn btn_filter btn_filter__brand">Искать бренд</button>
-            <select class="filter-item filter-item_brand" name="brand">
-              <option value="all" selected="true">Все</option>
+            <button class="btn btn_filter btn_filter__brand" data-filter="brand">Искать бренд</button>
+            <select class="filter-item filter-item_brand" name="brand" data-filter="brand">
+              <option value="" selected="true">Все</option>
             </select>
           </div>
         </section>

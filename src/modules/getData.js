@@ -109,10 +109,10 @@ const getFields = async () => {
   }
 };
 
-const getFilteredArray = async (userRequest) => {
+const getFilteredPrices = async (userRequest) => {
   let counter = 0;
-  const request = userRequest;
-
+  const request = Number(userRequest);
+  console.log('price ', request);
   const url = actualUrl;
   const auth = timeStamp();
   try {
@@ -125,11 +125,13 @@ const getFilteredArray = async (userRequest) => {
 
       body: JSON.stringify({
         action: 'filter',
-        params: { price: 17500.0 },
+        params: { price: request },
       }),
     });
 
     if (res.ok) {
+      console.log('getFilteredPrices ', await res.clone().text());
+
       const data = await res.json();
 
       return await data.result;
@@ -137,7 +139,7 @@ const getFilteredArray = async (userRequest) => {
       console.log(res.statusText);
       counter++;
       if (counter < 5) {
-        return await getFields();
+        return await getFilteredPrices(request);
       }
     }
     // console.log('filter ', await res.clone().text());
@@ -167,7 +169,7 @@ const getFilteredBrands = async (userRequest) => {
     });
 
     if (res.ok) {
-      console.log('filter ', await res.clone().text());
+      console.log('getFilteredBrands ', await res.clone().text());
       const data = await res.json();
 
       return await data.result;
@@ -175,7 +177,7 @@ const getFilteredBrands = async (userRequest) => {
       console.log(res.statusText);
       counter++;
       if (counter < 5) {
-        return await getFields();
+        return await getFilteredBrands(request);
       }
     }
   } catch (catchID) {
@@ -183,4 +185,41 @@ const getFilteredBrands = async (userRequest) => {
   }
 };
 
-export { getData, getCard, getFields, getFilteredArray, getFilteredBrands };
+const getFilteredProducts = async (userRequest) => {
+  let counter = 0;
+  const request = userRequest;
+
+  const url = actualUrl;
+  const auth = timeStamp();
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth': auth,
+      },
+
+      body: JSON.stringify({
+        action: 'filter',
+        params: { product: request },
+      }),
+    });
+
+    if (res.ok) {
+      console.log('getFilteredProducts ', await res.clone().text());
+      const data = await res.json();
+
+      return await data.result;
+    } else {
+      console.log(res.statusText);
+      counter++;
+      if (counter < 5) {
+        return await getFilteredProducts(request);
+      }
+    }
+  } catch (catchID) {
+    console.error('catchID', catchID);
+  }
+};
+
+export { getData, getCard, getFields, getFilteredProducts, getFilteredBrands, getFilteredPrices };

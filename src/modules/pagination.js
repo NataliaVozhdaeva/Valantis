@@ -1,5 +1,5 @@
-import { createCatalogPage } from './createCatalogPage';
-import { catalog, limit, additionalItem, lastPageNum } from './consts';
+import { createCatalogPage, additionalItem } from './createCatalogPage';
+import { catalog, limit, lastPageNum } from './consts';
 
 const currentPageEl = document.querySelector('.pagination-btn_current');
 let currentPage = 1;
@@ -22,7 +22,6 @@ const pagePlus = () => {
     nextPageBtn.setAttribute('disabled', 'true');
     btnToEnd.setAttribute('disabled', 'true');
   }
-  console.log('pagination ', additionalItem.size);
   catalog.innerHTML = '';
 
   additionalItem.size === 0

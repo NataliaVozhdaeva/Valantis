@@ -1,6 +1,5 @@
 import { getFields } from './getData';
 
-const additionalItem = new Set();
 const catalog = document.querySelector('.cards');
 const filters = document.querySelectorAll('.filter-item');
 const limit = 50;
@@ -15,4 +14,4 @@ const lastPageNum = Math.ceil(itemsAmount / limit);
 const fileredData = dataFromFields.filter((element) => element != null);
 const brands = new Set(fileredData);
 
-export { catalog, limit, additionalItem, lastPageNum, brands, filters };
+export { catalog, limit, lastPageNum, brands, filters };

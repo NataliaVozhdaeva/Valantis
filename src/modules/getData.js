@@ -28,7 +28,6 @@ const getData = async (myLimit = 50, myOffset = 0) => {
 
       return await data.result;
     } else {
-      // console.log('get ids ', await res.clone().text());
       console.log(res.statusText);
       counter++;
       if (counter < 5) {
@@ -64,7 +63,6 @@ const getCard = async (idsData) => {
       const data = await res.json();
       return await data.result;
     } else {
-      // console.log('getCards ', await res.clone().text());
       console.log(res.statusText);
       counter++;
       if (counter < 5) {
@@ -112,7 +110,6 @@ const getFields = async () => {
 const getFilteredPrices = async (userRequest) => {
   let counter = 0;
   const request = Number(userRequest);
-  console.log('price ', request);
   const url = actualUrl;
   const auth = timeStamp();
   try {
@@ -130,8 +127,6 @@ const getFilteredPrices = async (userRequest) => {
     });
 
     if (res.ok) {
-      console.log('getFilteredPrices ', await res.clone().text());
-
       const data = await res.json();
 
       return await data.result;
@@ -142,7 +137,6 @@ const getFilteredPrices = async (userRequest) => {
         return await getFilteredPrices(request);
       }
     }
-    // console.log('filter ', await res.clone().text());
   } catch (catchID) {
     console.error('catchID', catchID);
   }
@@ -169,7 +163,6 @@ const getFilteredBrands = async (userRequest) => {
     });
 
     if (res.ok) {
-      console.log('getFilteredBrands ', await res.clone().text());
       const data = await res.json();
 
       return await data.result;
@@ -206,7 +199,6 @@ const getFilteredProducts = async (userRequest) => {
     });
 
     if (res.ok) {
-      console.log('getFilteredProducts ', await res.clone().text());
       const data = await res.json();
 
       return await data.result;

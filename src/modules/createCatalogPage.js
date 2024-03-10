@@ -1,10 +1,11 @@
 import { createCard } from './createCard';
 import { getData, getCard, getFilteredProducts, getFilteredBrands, getFilteredPrices } from './getData';
 import { pagination } from './pagination';
-import { catalog, additionalItem, lastPageNum, limit, filters } from './consts';
+import { catalog, lastPageNum, limit, filters } from './consts';
 import { filterItems } from './filterCards';
 
 let identifier;
+export let additionalItem = new Set();
 let filteredCatalog = [];
 let filteredItemIndex = 0;
 let lastPageItemsAmount = 0;
@@ -21,7 +22,6 @@ const createFilterPaginatinBtn = (classNames, text = 1) => {
 
 const pagePlusFiltered = () => {
   currentFilteredPage++;
-
   paginationForFiltered(currentFilteredPage);
   catalog.innerHTML = '';
 
@@ -29,7 +29,7 @@ const pagePlusFiltered = () => {
     createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + lastPageItemsAmount));
   } else {
     createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + limit));
-    filteredItemIndex = filteredItemIndex + limit;
+    filteredItemIndex = additionalItem.size + limit * currentFilteredPage;
   }
 };
 
@@ -37,8 +37,8 @@ const pageToEndFiltered = () => {
   currentFilteredPage = lastFilteredPage;
   paginationForFiltered(currentFilteredPage);
   catalog.innerHTML = '';
-  createCards(filteredCatalog.slice(-(lastPageItemsAmount - additionalItem.size + 1)));
-  filteredItemIndex = filteredCatalog.length - additionalItem.size - 1;
+  createCards(filteredCatalog.slice(filteredCatalog.length - lastPageItemsAmount, filteredCatalog.length));
+  filteredItemIndex = filteredCatalog.length - additionalItem.size - 1 - lastPageItemsAmount;
 };
 
 const pageMinusFiltered = () => {
@@ -48,12 +48,12 @@ const pageMinusFiltered = () => {
   catalog.innerHTML = '';
 
   if (currentFilteredPage === 1) {
-    createCards(filteredCatalog.slice(0, filteredItemIndex));
+    createCards(filteredCatalog.slice(0, limit + additionalItem.size));
+    filteredItemIndex = 0;
   } else {
     createCards(filteredCatalog.slice(filteredItemIndex - limit, filteredItemIndex));
+    filteredItemIndex = filteredItemIndex - limit;
   }
-
-  filteredItemIndex = filteredItemIndex - limit;
 };
 
 const pageToStartFiltered = () => {
@@ -103,6 +103,7 @@ const paginationForFiltered = (currentFilteredPage) => {
 
 const getFilteredCards = async (userRequest) => {
   filteredCatalog.length = 0;
+  additionalItem = new Set();
   const request = userRequest;
   let data;
 
@@ -122,8 +123,6 @@ const getFilteredCards = async (userRequest) => {
 
   const info = await getCard(data);
 
-  console.log('info ', info);
-
   filteredCatalog.push(...info);
   lastPageItemsAmount = filteredCatalog.length % limit;
   lastFilteredPage = Math.ceil(filteredCatalog.length / limit);
@@ -133,7 +132,6 @@ const getFilteredCards = async (userRequest) => {
 const getInfo = async (countForLimit, countForOffset) => {
   const currentLimit = countForLimit;
   const currentOffset = countForOffset;
-
   const data = await getData(currentLimit, currentOffset);
   const info = await getCard(data);
 

@@ -1,12 +1,12 @@
 import { createCatalogPage } from './createCatalogPage';
-import { limit, filterTerm } from './consts';
+import { limit, catalog } from './consts';
 
 const applyBtn = document.querySelector('.btn_filter');
 const filterByNameField = document.querySelector('.filter-item_name');
 
 const filterItems = () => {
+  catalog.innerHTML = '';
   const request = filterByNameField.value;
-  filterTerm.add(request);
   createCatalogPage(limit, 0, request);
 };
 

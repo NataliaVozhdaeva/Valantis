@@ -215,6 +215,12 @@
   cursor: pointer;
 }
 
+.btn_filter[disabled]:hover {
+  color: var(--btn);
+  background-color: var(--cards);
+  cursor: auto;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -323,6 +329,8 @@
 }
 
 .pagination {
+  display: flex;
+  gap: 10px;
   margin: auto;
 }
 

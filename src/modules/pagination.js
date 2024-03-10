@@ -22,7 +22,7 @@ const pagePlus = () => {
     nextPageBtn.setAttribute('disabled', 'true');
     btnToEnd.setAttribute('disabled', 'true');
   }
-
+  console.log('pagination ', additionalItem.size);
   catalog.innerHTML = '';
 
   additionalItem.size === 0

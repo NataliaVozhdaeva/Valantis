@@ -357,6 +357,12 @@
   opacity: 0.5;
 }
 
+.pagination-btn:hover.pagination-btn_current:hover {
+  background-color: var(--cards);
+  color: var(--btn);
+  cursor: auto;
+}
+
 .empty-message {
   grid-column: 2/5;
 

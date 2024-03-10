@@ -7,6 +7,7 @@ import { filterItems } from './filterCards';
 let identifier;
 let filteredCatalog = [];
 let filteredItemIndex = 0;
+let lastPageItemsAmount = 0;
 
 let currentFilteredPage = 1;
 let lastFilteredPage;
@@ -19,23 +20,71 @@ const createFilterPaginatinBtn = (classNames, text = 1) => {
 };
 
 const pagePlusFiltered = () => {
-  console.log('nextPageBtn');
+  currentFilteredPage++;
+
+  paginationForFiltered(currentFilteredPage);
+  catalog.innerHTML = '';
+
+  if (currentFilteredPage === lastFilteredPage) {
+    createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + lastPageItemsAmount));
+  } else {
+    createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + limit));
+    filteredItemIndex = filteredItemIndex + limit;
+  }
 };
 
 const pageToEndFiltered = () => {
-  const currentFilteredPage = lastFilteredPage;
-  console.log('currentFilteredPage ', currentFilteredPage);
+  currentFilteredPage = lastFilteredPage;
   paginationForFiltered(currentFilteredPage);
-  const lastPageItemsAmount = filteredCatalog.length % limit;
   catalog.innerHTML = '';
-  createCards(filteredCatalog.slice(-(lastPageItemsAmount - additionalItem.size)));
+  createCards(filteredCatalog.slice(-(lastPageItemsAmount - additionalItem.size + 1)));
+  filteredItemIndex = filteredCatalog.length - additionalItem.size - 1;
+};
+
+const pageMinusFiltered = () => {
+  currentFilteredPage = currentFilteredPage - 1;
+
+  paginationForFiltered(currentFilteredPage);
+  catalog.innerHTML = '';
+
+  if (currentFilteredPage === 1) {
+    createCards(filteredCatalog.slice(0, filteredItemIndex));
+  } else {
+    createCards(filteredCatalog.slice(filteredItemIndex - limit, filteredItemIndex));
+  }
+
+  filteredItemIndex = filteredItemIndex - limit;
+};
+
+const pageToStartFiltered = () => {
+  currentFilteredPage = 1;
+  paginationForFiltered(currentFilteredPage);
+  catalog.innerHTML = '';
+  createCards(filteredCatalog.slice(0, limit + additionalItem.size - 1));
+  filteredItemIndex = 0;
 };
 
 const paginationForFiltered = (currentFilteredPage) => {
   const pagination = document.querySelector('.pagination');
   pagination.innerHTML = '';
 
-  const filteredPaginationBtnCurrent = createFilterPaginatinBtn('btn pagination-btn fpb_current', currentFilteredPage);
+  const filteredPaginationBtnToStart = createFilterPaginatinBtn('btn pagination-btn fpb_start', '<<');
+  pagination.append(filteredPaginationBtnToStart);
+  filteredPaginationBtnToStart.addEventListener('click', pageToStartFiltered);
+
+  const filteredPaginationBtnPrev = createFilterPaginatinBtn('btn pagination-btn fpb_prev', '<');
+  pagination.append(filteredPaginationBtnPrev);
+  filteredPaginationBtnPrev.addEventListener('click', pageMinusFiltered);
+
+  if (currentFilteredPage === 1) {
+    filteredPaginationBtnToStart.setAttribute('disabled', true);
+    filteredPaginationBtnPrev.setAttribute('disabled', true);
+  }
+
+  const filteredPaginationBtnCurrent = createFilterPaginatinBtn(
+    'btn pagination-btn pagination-btn_current',
+    currentFilteredPage
+  );
   pagination.append(filteredPaginationBtnCurrent);
 
   const filteredPaginationBtnNext = createFilterPaginatinBtn('btn pagination-btn fpb_next', '>');
@@ -46,24 +95,10 @@ const paginationForFiltered = (currentFilteredPage) => {
   pagination.append(filteredPaginationBtnToEnd);
   filteredPaginationBtnToEnd.addEventListener('click', pageToEndFiltered);
 
-  // btnToStart.addEventListener('click', () => {
-  //   console.log('btnToStart');
-  // });
-
-  // btnToEnd.addEventListener('click', () => {
-  //   nextPageBtn.setAttribute('disabled', 'true');
-  //   btnToEnd.setAttribute('disabled', 'true');
-  //   prevPageBtn.removeAttribute('disabled');
-  //   btnToStart.removeAttribute('disabled');
-
-  //   lastPage = Math.ceil(filteredCatalog.length / limit);
-  //   currentPageEl.textContent = lastPage;
-
-  //   catalog.innerHTML = '';
-  //   const lastPageItemsAmount = (filteredCatalog.length % limit) - additionalItem.size;
-
-  //   createCards(filteredCatalog.slice(-1, lastPageItemsAmount));
-  // });
+  if (currentFilteredPage === lastFilteredPage) {
+    filteredPaginationBtnNext.setAttribute('disabled', true);
+    filteredPaginationBtnToEnd.setAttribute('disabled', true);
+  }
 };
 
 const getFilteredCards = async (userRequest) => {
@@ -74,13 +109,9 @@ const getFilteredCards = async (userRequest) => {
   const info = await getCard(data);
 
   console.log('info ', info);
-  console.log('info length ', info.length);
 
   filteredCatalog.push(...info);
-
-  console.log('filteredCatalog ', filteredCatalog.length);
-  console.log('filteredCatalog flat ', filteredCatalog.flat());
-
+  lastPageItemsAmount = filteredCatalog.length % limit;
   lastFilteredPage = Math.ceil(filteredCatalog.length / limit);
   return info;
 };
@@ -97,7 +128,6 @@ const getInfo = async (countForLimit, countForOffset) => {
 
 const createCards = async (cardContent, isAdded = false) => {
   const content = await cardContent;
-  console.log('content ', content.length);
 
   if (content.length > 0) {
     content.forEach((el) => {
@@ -125,9 +155,10 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
   filterSubmit.setAttribute('disabled', 'true');
   const filterRequest = isFiltered;
 
+  filteredItemIndex = limit;
+
   const data = filterRequest ? await getFilteredCards(filterRequest) : await getInfo(countForLimit, countForOffset);
   isFiltered ? await createCards(data.slice(0, limit)) : await createCards(data);
-  if (isFiltered) filteredItemIndex = limit;
 
   // В запросе на первые 50 id для первой страницы возвращается одинаковый id под индексами 25 и 26 (58a3eff4-e06d-468d-9130-d3092a2574a5)
   // (и на каждый приходится по 2 карточки в запросе айтемов - то есть 4 карточки "Золотые серьги СССР с бриллиантами")

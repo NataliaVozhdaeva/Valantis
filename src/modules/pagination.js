@@ -1,26 +1,36 @@
-import { createCatalogPage, additionalItem } from './createCatalogPage';
-import { catalog, limit, lastPageNum } from './consts';
+import { createCatalogPage } from './createCatalogPage';
+import { createPagination } from './creatingPagination';
+import {
+  catalog,
+  limit,
+  lastPageNum,
+  notToGoBack,
+  notToGoFuther,
+  toGoBackLong,
+  toGoFutherLong,
+  toGoBackShort,
+  toGoFutherShort,
+  hangListeners,
+} from './consts';
 
 let currentPage = 1;
 
-const currentPageEl = document.querySelector('.pagination-btn_current');
-const nextPageBtn = document.querySelector('.pagination-btn_next');
-const prevPageBtn = document.querySelector('.pagination-btn_prev');
-const btnToStart = document.querySelector('.pagination-btn_start');
-const btnToEnd = document.querySelector('.pagination-btn_finish');
+export const paginationInit = () => {
+  createPagination();
+  hangListeners(pageToFirst, pageMinus, pagePlus, pageToEnd);
+  currentPage = 1;
+};
 
 const pagePlus = () => {
   currentPage++;
-  currentPageEl.textContent = currentPage;
+  document.querySelector('.pagination-btn_current').textContent = currentPage;
 
   if (currentPage === 2) {
-    prevPageBtn.removeAttribute('disabled');
-    btnToStart.removeAttribute('disabled');
+    toGoBackShort();
   }
 
   if (currentPage === lastPageNum) {
-    nextPageBtn.setAttribute('disabled', 'true');
-    btnToEnd.setAttribute('disabled', 'true');
+    notToGoFuther();
   }
 
   catalog.innerHTML = '';
@@ -29,16 +39,14 @@ const pagePlus = () => {
 
 const pageMinus = () => {
   currentPage--;
-  currentPageEl.textContent = currentPage;
+  document.querySelector('.pagination-btn_current').textContent = currentPage;
 
   if (currentPage === 1) {
-    prevPageBtn.setAttribute('disabled', 'true');
-    btnToStart.setAttribute('disabled', 'true');
+    notToGoBack();
   }
 
   if (currentPage === lastPageNum - 1) {
-    nextPageBtn.removeAttribute('disabled');
-    btnToEnd.removeAttribute('disabled');
+    toGoFutherShort();
   }
 
   catalog.innerHTML = '';
@@ -46,34 +54,25 @@ const pageMinus = () => {
 };
 
 const pageToFirst = () => {
-  prevPageBtn.setAttribute('disabled', 'true');
-  btnToStart.setAttribute('disabled', 'true');
-  nextPageBtn.removeAttribute('disabled');
-  btnToEnd.removeAttribute('disabled');
+  toGoFutherLong();
 
   currentPage = 1;
-  currentPageEl.textContent = currentPage;
+  document.querySelector('.pagination-btn_current').textContent = currentPage;
 
   catalog.innerHTML = '';
   createCatalogPage(limit, limit * (currentPage - 1));
 };
 
 const pageToEnd = () => {
-  nextPageBtn.setAttribute('disabled', 'true');
-  btnToEnd.setAttribute('disabled', 'true');
-  prevPageBtn.removeAttribute('disabled');
-  btnToStart.removeAttribute('disabled');
+  toGoBackLong();
 
   currentPage = lastPageNum;
-  currentPageEl.textContent = currentPage;
+  document.querySelector('.pagination-btn_current').textContent = currentPage;
 
   catalog.innerHTML = '';
   createCatalogPage(limit, limit * (currentPage - 1));
 };
 
 export const pagination = () => {
-  nextPageBtn.addEventListener('click', pagePlus);
-  prevPageBtn.addEventListener('click', pageMinus);
-  btnToStart.addEventListener('click', pageToFirst);
-  btnToEnd.addEventListener('click', pageToEnd);
+  hangListeners(pageToFirst, pageMinus, pagePlus, pageToEnd);
 };

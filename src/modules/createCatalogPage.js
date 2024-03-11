@@ -1,22 +1,28 @@
 import { createCard } from './createCard';
 import { getData, getCard, getFilteredProducts, getFilteredBrands, getFilteredPrices } from './getData';
 import { pagination } from './pagination';
-import { catalog, lastPageNum, limit, filters } from './consts';
 import { createLoader } from './createLoader';
 import { filterItems } from './filterCards';
+import { createPagination } from './creatingPagination';
+import {
+  catalog,
+  lastPageNum,
+  limit,
+  filters,
+  notToGoBack,
+  notToGoFuther,
+  toGoBackLong,
+  toGoFutherLong,
+  toGoBackShort,
+  toGoFutherShort,
+  hangListeners,
+} from './consts';
 
 let identifier;
-let additionalItem = new Set();
 let currentFilteredPage = 1;
 let filteredIds = [];
 let lastFilteredPage;
-
-const createFilterPaginatinBtn = (classNames, text) => {
-  const filteredPaginationBtn = document.createElement('btn');
-  filteredPaginationBtn.className = classNames;
-  filteredPaginationBtn.textContent = text;
-  return filteredPaginationBtn;
-};
+let additionalItem;
 
 const pagePlusFiltered = async () => {
   currentFilteredPage++;
@@ -27,21 +33,21 @@ const pagePlusFiltered = async () => {
 
   const from = limit * (currentFilteredPage - 1) + additionalItem.size;
   const to = from + limit;
-
   const currentIds = filteredIds.slice(from, to);
   const nextPageData = await getFilteredCards(currentIds);
+
   createCards(nextPageData);
-
   document.getElementById('cards_loader').classList.add('hidden');
-
-  document.querySelector('.pagination-btn_prev').removeAttribute('disabled');
-  document.querySelector('.pagination-btn_start').removeAttribute('disabled');
+  toGoBackShort();
 
   if (currentFilteredPage === lastFilteredPage) {
-    document.querySelector('.pagination-btn_next').setAttribute('disabled', 'true');
-    document.querySelector('.pagination-btn_finish').setAttribute('disabled', 'true');
+    notToGoFuther();
   }
 };
+
+//Пагинацию для данных, сортируемых на стороне клиента решила сделать отдельную, так как создание страницы
+//предполагает обращение к серверу, а в случае с фильтром он не умеет учитывать смещение и лимит,
+//а забирать всю пачку данных может быть накладно - вдруг у нас миллионы товаров?
 
 const pageMinusFiltered = async () => {
   currentFilteredPage--;
@@ -52,18 +58,15 @@ const pageMinusFiltered = async () => {
 
   const from = currentFilteredPage == 1 ? 0 : limit * (currentFilteredPage - 1) + additionalItem.size;
   const to = currentFilteredPage == 1 ? from + limit + additionalItem.size : from + limit;
-
   const currentIds = filteredIds.slice(from, to);
   const nextPageData = await getFilteredCards(currentIds);
   createCards(nextPageData);
 
   document.getElementById('cards_loader').classList.add('hidden');
-  document.querySelector('.pagination-btn_next').removeAttribute('disabled');
-  document.querySelector('.pagination-btn_finish').removeAttribute('disabled');
+  toGoFutherShort();
 
   if (currentFilteredPage == 1) {
-    document.querySelector('.pagination-btn_prev').setAttribute('disabled', 'true');
-    document.querySelector('.pagination-btn_start').setAttribute('disabled', 'true');
+    notToGoBack();
   }
 };
 
@@ -76,16 +79,12 @@ const pageToStartFiltered = async () => {
 
   const from = 0;
   const to = from + limit + additionalItem.size;
-
   const currentIds = filteredIds.slice(from, to);
   const nextPageData = await getFilteredCards(currentIds);
   createCards(nextPageData);
 
   document.getElementById('cards_loader').classList.add('hidden');
-  document.querySelector('.pagination-btn_prev').setAttribute('disabled', 'true');
-  document.querySelector('.pagination-btn_start').setAttribute('disabled', 'true');
-  document.querySelector('.pagination-btn_next').removeAttribute('disabled');
-  document.querySelector('.pagination-btn_finish').removeAttribute('disabled');
+  toGoFutherLong();
 };
 
 const pageToEndFiltered = async () => {
@@ -101,51 +100,21 @@ const pageToEndFiltered = async () => {
       : limit * (currentFilteredPage - 1) + additionalItem.size;
 
   const to = filteredIds.length;
-
   const currentIds = filteredIds.slice(from, to);
   const nextPageData = await getFilteredCards(currentIds);
 
   createCards(nextPageData);
 
   document.getElementById('cards_loader').classList.add('hidden');
-  document.querySelector('.pagination-btn_prev').removeAttribute('disabled');
-  document.querySelector('.pagination-btn_start').removeAttribute('disabled');
-  document.querySelector('.pagination-btn_next').setAttribute('disabled', 'true');
-  document.querySelector('.pagination-btn_finish').setAttribute('disabled', 'true');
+  toGoBackLong();
 };
 
 const paginationForFiltered = (pageNum) => {
-  const pagination = document.querySelector('.pagination');
-  pagination.innerHTML = '';
-
-  const filteredPaginationBtnToStart = createFilterPaginatinBtn('pagination-btn pagination-btn_start btn', '<<');
-  pagination.append(filteredPaginationBtnToStart);
-  filteredPaginationBtnToStart.addEventListener('click', pageToStartFiltered);
-
-  const filteredPaginationBtnPrev = createFilterPaginatinBtn('pagination-btn pagination-btn_prev btn', '<');
-  pagination.append(filteredPaginationBtnPrev);
-  filteredPaginationBtnPrev.addEventListener('click', pageMinusFiltered);
-
-  filteredPaginationBtnToStart.setAttribute('disabled', true);
-  filteredPaginationBtnPrev.setAttribute('disabled', true);
-
-  const filteredPaginationBtnCurrent = createFilterPaginatinBtn(
-    'pagination-btn pagination-btn_current btn',
-    currentFilteredPage
-  );
-  pagination.append(filteredPaginationBtnCurrent);
-
-  const filteredPaginationBtnNext = createFilterPaginatinBtn('pagination-btn pagination-btn_next btn', '>');
-  pagination.append(filteredPaginationBtnNext);
-  filteredPaginationBtnNext.addEventListener('click', pagePlusFiltered);
-
-  const filteredPaginationBtnToEnd = createFilterPaginatinBtn('pagination-btn pagination-btn_finish btn', '>>');
-  pagination.append(filteredPaginationBtnToEnd);
-  filteredPaginationBtnToEnd.addEventListener('click', pageToEndFiltered);
+  createPagination();
+  hangListeners(pageToStartFiltered, pageMinusFiltered, pagePlusFiltered, pageToEndFiltered);
 
   if (pageNum === lastFilteredPage) {
-    filteredPaginationBtnNext.setAttribute('disabled', true);
-    filteredPaginationBtnToEnd.setAttribute('disabled', true);
+    notToGoFuther();
   }
 };
 
@@ -168,11 +137,11 @@ const getFilteredInfo = async (userRequest) => {
   }
 
   filteredIds = data;
+  lastFilteredPage = Math.ceil(filteredIds.length / limit);
   return await getFilteredCards(filteredIds.slice(0, limit));
 };
 
 const getFilteredCards = async (ids) => {
-  lastFilteredPage = Math.ceil(filteredIds.length / limit);
   const cardsIds = ids;
   const info = await getCard(cardsIds);
 
@@ -217,8 +186,9 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
   catalog.append(createLoader());
 
   let currentOffset;
-  if (additionalItem.size === 0 || document.querySelector('.pagination-btn_current').textContent == 1) {
+  if (document.querySelector('.pagination-btn_current').textContent == 1 || isFiltered) {
     currentOffset = countForOffset;
+    additionalItem = new Set();
   } else {
     currentOffset = countForOffset + additionalItem.size;
   }
@@ -234,11 +204,6 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
     filters.forEach((el) => {
       el.value = '';
     });
-  }
-
-  if (isFiltered) {
-    additionalItem = new Set();
-    currentFilteredPage = 1;
   }
 
   const data = filterRequest ? await getFilteredInfo(filterRequest) : await getInfo(countForLimit, currentOffset);
@@ -267,6 +232,8 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
   // Мне кажется, этот вопрос стоило бы решить на стороне бэка, чтобы не монструозить тут...
 
   if (isFiltered && document.getElementsByClassName('card').length < limit && filteredIds.length > 50) {
+    document.getElementById('cards_loader').classList.remove('hidden');
+    document.getElementById('cards_loader').classList.add('additional');
     const additionalAmount = limit - document.querySelectorAll('.card').length;
     const additionalIds = filteredIds.slice(
       limit * currentFilteredPage,
@@ -279,6 +246,6 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
   document.getElementById('cards_loader').classList.add('hidden');
   document.getElementById('cards_loader').classList.remove('additional');
 
-  isFiltered ? paginationForFiltered(currentFilteredPage) : pagination();
+  isFiltered ? paginationForFiltered('1') : pagination();
   filterSubmit.forEach((el) => el.removeAttribute('disabled'));
 };

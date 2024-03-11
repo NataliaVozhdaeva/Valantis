@@ -122,7 +122,7 @@
 
 .filter {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr) 150px;
   gap: 50px;
 }
 
@@ -137,7 +137,7 @@
   margin-bottom: 20px;
 }
 
-.select-wrapper:last-child:before {
+.select-wrapper:last-of-type:before {
   content: '';
   position: absolute;
   z-index: 2;
@@ -401,6 +401,7 @@
   border-radius: 50%;
 }
 
+.hidden,
 #cards_loader.hidden {
   display: none;
 }

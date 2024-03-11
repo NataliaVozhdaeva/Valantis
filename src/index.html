@@ -41,7 +41,7 @@
         <section class="hero"></section>
         <section class="filter">
           <div class="select-wrapper">
-            <button class="btn btn_filter btn_filter__name" data-filter="product">Искать в названии</button>
+            <button class="btn btn_filter btn_filter__name btn_item" data-filter="product">Искать в названии</button>
             <input
               type="text"
               class="filter-item filter-item_name"
@@ -50,15 +50,16 @@
               placeholder="запрос для поиска" />
           </div>
           <div class="select-wrapper">
-            <button class="btn btn_filter btn_filter__price" data-filter="price">Искать по цене</button>
+            <button class="btn btn_filter btn_filter__price btn_item" data-filter="price">Искать по цене</button>
             <input name="price" class="filter-item filter-item_price" data-filter="price" placeholder="12500" />
           </div>
           <div class="select-wrapper">
-            <button class="btn btn_filter btn_filter__brand" data-filter="brand">Искать бренд</button>
+            <button class="btn btn_filter btn_filter__brand btn_item" data-filter="brand">Искать бренд</button>
             <select class="filter-item filter-item_brand" name="brand" data-filter="brand">
               <option value="" selected="true">Все</option>
             </select>
           </div>
+          <button class="btn btn_filter btn_filter__clean">Сбросить фильтры</button>
         </section>
         <section class="catalog">
           <ul class="cards list"></ul>

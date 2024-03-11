@@ -22,11 +22,9 @@ const pagePlus = () => {
     nextPageBtn.setAttribute('disabled', 'true');
     btnToEnd.setAttribute('disabled', 'true');
   }
-  catalog.innerHTML = '';
 
-  additionalItem.size === 0
-    ? createCatalogPage(limit, limit * (currentPage - 1))
-    : createCatalogPage(limit, limit * (currentPage - 1) + additionalItem.size);
+  catalog.innerHTML = '';
+  createCatalogPage(limit, limit * (currentPage - 1));
 };
 
 const pageMinus = () => {
@@ -44,14 +42,7 @@ const pageMinus = () => {
   }
 
   catalog.innerHTML = '';
-
-  if (additionalItem.size === 0) {
-    createCatalogPage(limit, limit * (currentPage - 1));
-  } else {
-    currentPage !== 1
-      ? createCatalogPage(limit, limit * (currentPage - 1) + additionalItem.size)
-      : createCatalogPage(limit, 0);
-  }
+  createCatalogPage(limit, limit * (currentPage - 1));
 };
 
 const pageToFirst = () => {
@@ -64,8 +55,7 @@ const pageToFirst = () => {
   currentPageEl.textContent = currentPage;
 
   catalog.innerHTML = '';
-
-  createCatalogPage(limit, limit * currentPage - limit);
+  createCatalogPage(limit, limit * (currentPage - 1));
 };
 
 const pageToEnd = () => {
@@ -78,10 +68,7 @@ const pageToEnd = () => {
   currentPageEl.textContent = currentPage;
 
   catalog.innerHTML = '';
-
-  additionalItem.size === 0
-    ? createCatalogPage(limit, limit * (currentPage - 1))
-    : createCatalogPage(limit, limit * (currentPage - 1) + additionalItem.size);
+  createCatalogPage(limit, limit * (currentPage - 1));
 };
 
 export const pagination = () => {

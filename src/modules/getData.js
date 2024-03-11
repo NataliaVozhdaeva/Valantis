@@ -25,7 +25,6 @@ const getData = async (myLimit = 50, myOffset = 0) => {
 
     if (res.ok) {
       const data = await res.json();
-
       return await data.result;
     } else {
       console.log(res.statusText);
@@ -128,10 +127,9 @@ const getFilteredPrices = async (userRequest) => {
 
     if (res.ok) {
       const data = await res.json();
-
       return await data.result;
     } else {
-      console.log(res.statusText);
+      console.log(catchID);
       counter++;
       if (counter < 5) {
         return await getFilteredPrices(request);
@@ -164,10 +162,9 @@ const getFilteredBrands = async (userRequest) => {
 
     if (res.ok) {
       const data = await res.json();
-
       return await data.result;
     } else {
-      console.log(res.statusText);
+      console.log(catchID);
       counter++;
       if (counter < 5) {
         return await getFilteredBrands(request);
@@ -200,10 +197,9 @@ const getFilteredProducts = async (userRequest) => {
 
     if (res.ok) {
       const data = await res.json();
-
       return await data.result;
     } else {
-      console.log(res.statusText);
+      console.log(catchID);
       counter++;
       if (counter < 5) {
         return await getFilteredProducts(request);

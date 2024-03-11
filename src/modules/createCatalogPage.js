@@ -6,107 +6,19 @@ import { createLoader } from './createLoader';
 import { filterItems } from './filterCards';
 
 let identifier;
-export let additionalItem = new Set();
-let filteredCatalog = [];
-let filteredItemIndex = 0;
-let lastPageItemsAmount = 0;
+let additionalItem = new Set();
 
 let currentFilteredPage = 1;
-let lastFilteredPage;
+let filteredIds = [];
 
-// const loader = document.getElementById('cards_loader');
-
-const createFilterPaginatinBtn = (classNames, text = 1) => {
-  const filteredPaginationBtn = document.createElement('btn');
-  filteredPaginationBtn.className = classNames;
-  filteredPaginationBtn.textContent = text;
-  return filteredPaginationBtn;
-};
-
-const pagePlusFiltered = () => {
-  currentFilteredPage++;
-  paginationForFiltered(currentFilteredPage);
-  catalog.innerHTML = '';
-
-  if (currentFilteredPage === lastFilteredPage) {
-    createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + lastPageItemsAmount));
-  } else {
-    createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + limit));
-    filteredItemIndex = additionalItem.size + limit * currentFilteredPage;
-  }
-};
-
-const pageMinusFiltered = () => {
-  currentFilteredPage = currentFilteredPage - 1;
-
-  paginationForFiltered(currentFilteredPage);
-  catalog.innerHTML = '';
-
-  if (currentFilteredPage === 1) {
-    createCards(filteredCatalog.slice(0, limit + additionalItem.size));
-    filteredItemIndex = 0;
-  } else {
-    createCards(filteredCatalog.slice(filteredItemIndex - limit * 2, filteredItemIndex - limit));
-    filteredItemIndex = filteredItemIndex - limit;
-  }
-};
-
-const pageToEndFiltered = () => {
-  currentFilteredPage = lastFilteredPage;
-  paginationForFiltered(currentFilteredPage);
-  catalog.innerHTML = '';
-  createCards(filteredCatalog.slice(filteredCatalog.length - lastPageItemsAmount, filteredCatalog.length));
-  filteredItemIndex = filteredCatalog.length - lastPageItemsAmount;
-};
-
-const pageToStartFiltered = () => {
-  currentFilteredPage = 1;
-  paginationForFiltered(currentFilteredPage);
-  catalog.innerHTML = '';
-  createCards(filteredCatalog.slice(0, limit + additionalItem.size));
-  filteredItemIndex = 0;
-};
-
-const paginationForFiltered = (currentFilteredPage) => {
+const paginationForFiltered = (pageNum) => {
   const pagination = document.querySelector('.pagination');
   pagination.innerHTML = '';
 
-  const filteredPaginationBtnToStart = createFilterPaginatinBtn('btn pagination-btn fpb_start', '<<');
-  pagination.append(filteredPaginationBtnToStart);
-  filteredPaginationBtnToStart.addEventListener('click', pageToStartFiltered);
-
-  const filteredPaginationBtnPrev = createFilterPaginatinBtn('btn pagination-btn fpb_prev', '<');
-  pagination.append(filteredPaginationBtnPrev);
-  filteredPaginationBtnPrev.addEventListener('click', pageMinusFiltered);
-
-  if (currentFilteredPage === 1) {
-    filteredPaginationBtnToStart.setAttribute('disabled', true);
-    filteredPaginationBtnPrev.setAttribute('disabled', true);
-  }
-
-  const filteredPaginationBtnCurrent = createFilterPaginatinBtn(
-    'btn pagination-btn pagination-btn_current',
-    currentFilteredPage
-  );
-  pagination.append(filteredPaginationBtnCurrent);
-
-  const filteredPaginationBtnNext = createFilterPaginatinBtn('btn pagination-btn fpb_next', '>');
-  pagination.append(filteredPaginationBtnNext);
-  filteredPaginationBtnNext.addEventListener('click', pagePlusFiltered);
-
-  const filteredPaginationBtnToEnd = createFilterPaginatinBtn('btn pagination-btn fpb_finish', '>>');
-  pagination.append(filteredPaginationBtnToEnd);
-  filteredPaginationBtnToEnd.addEventListener('click', pageToEndFiltered);
-
-  if (currentFilteredPage === lastFilteredPage) {
-    filteredPaginationBtnNext.setAttribute('disabled', true);
-    filteredPaginationBtnToEnd.setAttribute('disabled', true);
-  }
+  // if(filteredIds.length )
 };
 
-const getFilteredCards = async (userRequest) => {
-  filteredCatalog.length = 0;
-  additionalItem = new Set();
+const getFilteredInfo = async (userRequest) => {
   const request = userRequest;
   let data;
 
@@ -124,11 +36,17 @@ const getFilteredCards = async (userRequest) => {
       break;
   }
 
-  const info = await getCard(data);
+  filteredIds = data;
+  console.log('filteredData ', filteredIds);
 
-  filteredCatalog.push(...info);
-  lastPageItemsAmount = filteredCatalog.length % limit;
-  lastFilteredPage = Math.ceil(filteredCatalog.length / limit);
+  return await getFilteredCards(filteredIds.slice(0, limit));
+};
+
+const getFilteredCards = async (ids) => {
+  const cardsIds = ids;
+  console.log('which card we ask ', cardsIds);
+  const info = await getCard(cardsIds);
+
   return info;
 };
 
@@ -155,7 +73,7 @@ const createCards = async (cardContent, isAdded = false) => {
           additionalItem.add(el.id);
         }
 
-        catalog.prepend(createCard(el.product, el.id, el.price, el.brand));
+        catalog.append(createCard(el.product, el.id, el.price, el.brand));
       }
     });
   } else {
@@ -167,9 +85,17 @@ const createCards = async (cardContent, isAdded = false) => {
 };
 
 export const createCatalogPage = async (countForLimit = limit, countForOffset = 0, isFiltered = null) => {
-  catalog.append(createLoader());
-  filteredItemIndex = limit;
+  let currentOffset;
+  if (additionalItem.size === 0 || document.querySelector('.pagination-btn_current').textContent == 1) {
+    currentOffset = countForOffset;
+  } else {
+    currentOffset = countForOffset + additionalItem.size;
+  }
 
+  // const currentOffset = additionalItem === 0 ? countForOffset : countForOffset + additionalItem;
+
+  catalog.append(createLoader());
+  filteredIds.length = 0;
   const filterSubmit = document.querySelectorAll('.btn_filter');
   const filterRequest = isFiltered;
 
@@ -181,10 +107,10 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
     el.setAttribute('disabled', 'true');
   });
 
-  const data = filterRequest ? await getFilteredCards(filterRequest) : await getInfo(countForLimit, countForOffset);
-  isFiltered ? await createCards(data.slice(0, limit)) : await createCards(data);
-
+  const data = filterRequest ? await getFilteredInfo(filterRequest) : await getInfo(countForLimit, currentOffset);
+  await createCards(data);
   document.getElementById('cards_loader').classList.add('hidden');
+
   // В запросе на первые 50 id для первой страницы возвращается одинаковый id под индексами 25 и 26 (58a3eff4-e06d-468d-9130-d3092a2574a5)
   // (и на каждый приходится по 2 карточки в запросе айтемов - то есть 4 карточки "Золотые серьги СССР с бриллиантами")
   // => приходится дозапрашивать еще одну карточку (из следующих 50) и сдвигать оффсет.
@@ -206,22 +132,19 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
   // В отфильтрованных данных этот баг тоже есть, поэтому нужна доп.проверка.
   // Мне кажется, этот вопрос стоило бы решить на стороне бэка, чтобы не монструозить тут...
 
-  if (
-    isFiltered &&
-    document.getElementsByClassName('card').length < limit &&
-    filteredCatalog.flat().length > 50 &&
-    document.querySelector('.pagination-btn_current').textContent != lastFilteredPage
-  ) {
-    const additionalimit = limit - document.querySelectorAll('.card').length;
-    await createCards(filteredCatalog.slice(filteredItemIndex, filteredItemIndex + additionalimit), true);
-    filteredItemIndex = filteredItemIndex + additionalimit;
+  if (isFiltered && document.getElementsByClassName('card').length < limit && filteredIds.length > 50) {
+    const additionalAmount = limit - document.querySelectorAll('.card').length;
+    const additionalIds = filteredIds.slice(
+      limit * currentFilteredPage,
+      limit * currentFilteredPage + additionalAmount
+    );
+    const additionatData = await getFilteredCards(additionalIds);
+    await createCards(additionatData, true);
   }
 
   document.getElementById('cards_loader').classList.add('hidden');
   document.getElementById('cards_loader').classList.remove('additional');
 
   isFiltered ? paginationForFiltered(currentFilteredPage) : pagination();
-  filterSubmit.forEach((el) => {
-    el.removeAttribute('disabled');
-  });
+  filterSubmit.forEach((el) => el.removeAttribute('disabled'));
 };

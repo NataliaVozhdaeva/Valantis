@@ -8,6 +8,8 @@ const getCategory = (filterKey) => {
   filters.forEach((el) => {
     if (el.dataset.filter === filterKey) {
       filterValue = el.value;
+    } else {
+      el.value = '';
     }
   });
   return filterValue;
@@ -22,7 +24,9 @@ const filterItems = (e) => {
     const filterValue = getCategory(filterKey);
     const request = { filterBy: filterKey, value: filterValue };
 
-    request ? createCatalogPage(limit, 0, request) : createCatalogPage(limit, 0, null);
+    console.log('filtered request ', request);
+
+    request.value ? createCatalogPage(limit, 0, request) : createCatalogPage(limit, 0, null);
   }
 };
 

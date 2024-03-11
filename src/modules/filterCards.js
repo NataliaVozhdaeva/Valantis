@@ -24,8 +24,6 @@ const filterItems = (e) => {
     const filterValue = getCategory(filterKey);
     const request = { filterBy: filterKey, value: filterValue };
 
-    console.log('filtered request ', request);
-
     request.value ? createCatalogPage(limit, 0, request) : createCatalogPage(limit, 0, null);
   }
 };

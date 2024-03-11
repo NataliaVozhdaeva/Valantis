@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test-task_Vozhdaeva</title>
 
+    <link rel="icon" href="./assets/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -41,11 +42,16 @@
         <section class="filter">
           <div class="select-wrapper">
             <button class="btn btn_filter btn_filter__name" data-filter="product">Искать в названии</button>
-            <input type="text" class="filter-item filter-item_name" name="name" data-filter="product" />
+            <input
+              type="text"
+              class="filter-item filter-item_name"
+              name="name"
+              data-filter="product"
+              placeholder="запрос для поиска" />
           </div>
           <div class="select-wrapper">
             <button class="btn btn_filter btn_filter__price" data-filter="price">Искать по цене</button>
-            <input name="price" class="filter-item filter-item_price" data-filter="price" />
+            <input name="price" class="filter-item filter-item_price" data-filter="price" placeholder="12500" />
           </div>
           <div class="select-wrapper">
             <button class="btn btn_filter btn_filter__brand" data-filter="brand">Искать бренд</button>

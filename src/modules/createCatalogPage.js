@@ -226,8 +226,6 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
   const filterSubmit = document.querySelectorAll('.btn_filter');
   const filterRequest = isFiltered;
 
-  console.log('isFiltered ', isFiltered);
-
   filterSubmit.forEach((el) => {
     el.setAttribute('disabled', 'true');
   });

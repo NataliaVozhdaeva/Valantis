@@ -27,7 +27,7 @@ const getData = async (myLimit = 50, myOffset = 0) => {
       const data = await res.json();
       return await data.result;
     } else {
-      console.log(res.statusText);
+      console.log(res.statusText + ' server answer ' + res.body.ReadableStream);
       counter++;
       if (counter < 5) {
         return await getData(currentLimit, currentOffset);
@@ -62,7 +62,7 @@ const getCard = async (idsData) => {
       const data = await res.json();
       return await data.result;
     } else {
-      console.log(res.statusText);
+      console.log(res.statusText + ' server answer ' + res.body.ReadableStream);
       counter++;
       if (counter < 5) {
         return await getCard(request);
@@ -95,7 +95,7 @@ const getFields = async () => {
       const data = await res.json();
       return await data;
     } else {
-      console.log(res.statusText);
+      console.log(res.statusText + ' server answer ' + res.body.ReadableStream);
       counter++;
       if (counter < 5) {
         return await getFields();
@@ -129,7 +129,7 @@ const getFilteredPrices = async (userRequest) => {
       const data = await res.json();
       return await data.result;
     } else {
-      console.log(res.statusText);
+      console.log(res.statusText + ' server answer ' + res.body.ReadableStream);
       counter++;
       if (counter < 5) {
         return await getFilteredPrices(request);
@@ -164,7 +164,7 @@ const getFilteredBrands = async (userRequest) => {
       const data = await res.json();
       return await data.result;
     } else {
-      console.log(res.statusText);
+      console.log(res.statusText + ' server answer ' + res.body.ReadableStream);
       counter++;
       if (counter < 5) {
         return await getFilteredBrands(request);
@@ -199,7 +199,7 @@ const getFilteredProducts = async (userRequest) => {
       const data = await res.json();
       return await data.result;
     } else {
-      console.log(res.statusText);
+      console.log(res.statusText + ' server answer ' + res.body.ReadableStream);
       counter++;
       if (counter < 5) {
         return await getFilteredProducts(request);

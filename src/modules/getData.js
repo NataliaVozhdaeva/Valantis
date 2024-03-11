@@ -129,7 +129,7 @@ const getFilteredPrices = async (userRequest) => {
       const data = await res.json();
       return await data.result;
     } else {
-      console.log(catchID);
+      console.log(res.statusText);
       counter++;
       if (counter < 5) {
         return await getFilteredPrices(request);
@@ -164,7 +164,7 @@ const getFilteredBrands = async (userRequest) => {
       const data = await res.json();
       return await data.result;
     } else {
-      console.log(catchID);
+      console.log(res.statusText);
       counter++;
       if (counter < 5) {
         return await getFilteredBrands(request);
@@ -199,7 +199,7 @@ const getFilteredProducts = async (userRequest) => {
       const data = await res.json();
       return await data.result;
     } else {
-      console.log(catchID);
+      console.log(res.statusText);
       counter++;
       if (counter < 5) {
         return await getFilteredProducts(request);

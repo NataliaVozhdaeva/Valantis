@@ -7,15 +7,146 @@ import { filterItems } from './filterCards';
 
 let identifier;
 let additionalItem = new Set();
-
 let currentFilteredPage = 1;
 let filteredIds = [];
+let lastFilteredPage;
+
+const createFilterPaginatinBtn = (classNames, text) => {
+  const filteredPaginationBtn = document.createElement('btn');
+  filteredPaginationBtn.className = classNames;
+  filteredPaginationBtn.textContent = text;
+  return filteredPaginationBtn;
+};
+
+const pagePlusFiltered = async () => {
+  currentFilteredPage++;
+  catalog.innerHTML = '';
+
+  document.querySelector('.pagination-btn_current').textContent = currentFilteredPage;
+  catalog.append(createLoader());
+
+  const from = limit * (currentFilteredPage - 1) + additionalItem.size;
+  const to = from + limit;
+
+  const currentIds = filteredIds.slice(from, to);
+  const nextPageData = await getFilteredCards(currentIds);
+  createCards(nextPageData);
+
+  document.getElementById('cards_loader').classList.add('hidden');
+
+  document.querySelector('.pagination-btn_prev').removeAttribute('disabled');
+  document.querySelector('.pagination-btn_start').removeAttribute('disabled');
+
+  if (currentFilteredPage === lastFilteredPage) {
+    document.querySelector('.pagination-btn_next').setAttribute('disabled', 'true');
+    document.querySelector('.pagination-btn_finish').setAttribute('disabled', 'true');
+  }
+};
+
+const pageMinusFiltered = async () => {
+  currentFilteredPage--;
+  catalog.innerHTML = '';
+
+  document.querySelector('.pagination-btn_current').textContent = currentFilteredPage;
+  catalog.append(createLoader());
+
+  const from = currentFilteredPage == 1 ? 0 : limit * (currentFilteredPage - 1) + additionalItem.size;
+  const to = currentFilteredPage == 1 ? from + limit + additionalItem.size : from + limit;
+
+  const currentIds = filteredIds.slice(from, to);
+  const nextPageData = await getFilteredCards(currentIds);
+  createCards(nextPageData);
+
+  document.getElementById('cards_loader').classList.add('hidden');
+  document.querySelector('.pagination-btn_next').removeAttribute('disabled');
+  document.querySelector('.pagination-btn_finish').removeAttribute('disabled');
+
+  if (currentFilteredPage == 1) {
+    document.querySelector('.pagination-btn_prev').setAttribute('disabled', 'true');
+    document.querySelector('.pagination-btn_start').setAttribute('disabled', 'true');
+  }
+};
+
+const pageToStartFiltered = async () => {
+  currentFilteredPage = 1;
+  catalog.innerHTML = '';
+
+  document.querySelector('.pagination-btn_current').textContent = currentFilteredPage;
+  catalog.append(createLoader());
+
+  const from = 0;
+  const to = from + limit + additionalItem.size;
+
+  const currentIds = filteredIds.slice(from, to);
+  const nextPageData = await getFilteredCards(currentIds);
+  createCards(nextPageData);
+
+  document.getElementById('cards_loader').classList.add('hidden');
+  document.querySelector('.pagination-btn_prev').setAttribute('disabled', 'true');
+  document.querySelector('.pagination-btn_start').setAttribute('disabled', 'true');
+  document.querySelector('.pagination-btn_next').removeAttribute('disabled');
+  document.querySelector('.pagination-btn_finish').removeAttribute('disabled');
+};
+
+const pageToEndFiltered = async () => {
+  currentFilteredPage = lastFilteredPage;
+  catalog.innerHTML = '';
+
+  document.querySelector('.pagination-btn_current').textContent = currentFilteredPage;
+  catalog.append(createLoader());
+
+  const from =
+    additionalItem.size === 0
+      ? limit * (currentFilteredPage - 1)
+      : limit * (currentFilteredPage - 1) + additionalItem.size;
+
+  const to = filteredIds.length;
+
+  const currentIds = filteredIds.slice(from, to);
+  const nextPageData = await getFilteredCards(currentIds);
+
+  createCards(nextPageData);
+
+  document.getElementById('cards_loader').classList.add('hidden');
+  document.querySelector('.pagination-btn_prev').removeAttribute('disabled');
+  document.querySelector('.pagination-btn_start').removeAttribute('disabled');
+  document.querySelector('.pagination-btn_next').setAttribute('disabled', 'true');
+  document.querySelector('.pagination-btn_finish').setAttribute('disabled', 'true');
+};
 
 const paginationForFiltered = (pageNum) => {
   const pagination = document.querySelector('.pagination');
   pagination.innerHTML = '';
 
-  // if(filteredIds.length )
+  const filteredPaginationBtnToStart = createFilterPaginatinBtn('pagination-btn pagination-btn_start btn', '<<');
+  pagination.append(filteredPaginationBtnToStart);
+  filteredPaginationBtnToStart.addEventListener('click', pageToStartFiltered);
+
+  const filteredPaginationBtnPrev = createFilterPaginatinBtn('pagination-btn pagination-btn_prev btn', '<');
+  pagination.append(filteredPaginationBtnPrev);
+  filteredPaginationBtnPrev.addEventListener('click', pageMinusFiltered);
+
+  filteredPaginationBtnToStart.setAttribute('disabled', true);
+  filteredPaginationBtnPrev.setAttribute('disabled', true);
+
+  const filteredPaginationBtnCurrent = createFilterPaginatinBtn(
+    'pagination-btn pagination-btn_current btn',
+    currentFilteredPage
+  );
+  pagination.append(filteredPaginationBtnCurrent);
+
+  const filteredPaginationBtnNext = createFilterPaginatinBtn('pagination-btn pagination-btn_next btn', '>');
+  pagination.append(filteredPaginationBtnNext);
+  filteredPaginationBtnNext.addEventListener('click', pagePlusFiltered);
+
+  const filteredPaginationBtnToEnd = createFilterPaginatinBtn('pagination-btn pagination-btn_finish btn', '>>');
+  pagination.append(filteredPaginationBtnToEnd);
+  filteredPaginationBtnToEnd.addEventListener('click', pageToEndFiltered);
+
+  if (pageNum === lastFilteredPage) {
+    filteredPaginationBtnNext.setAttribute('disabled', true);
+    filteredPaginationBtnToEnd.setAttribute('disabled', true);
+  }
 };
 
 const getFilteredInfo = async (userRequest) => {
@@ -37,14 +168,12 @@ const getFilteredInfo = async (userRequest) => {
   }
 
   filteredIds = data;
-  console.log('filteredData ', filteredIds);
-
   return await getFilteredCards(filteredIds.slice(0, limit));
 };
 
 const getFilteredCards = async (ids) => {
+  lastFilteredPage = Math.ceil(filteredIds.length / limit);
   const cardsIds = ids;
-  console.log('which card we ask ', cardsIds);
   const info = await getCard(cardsIds);
 
   return info;
@@ -85,6 +214,8 @@ const createCards = async (cardContent, isAdded = false) => {
 };
 
 export const createCatalogPage = async (countForLimit = limit, countForOffset = 0, isFiltered = null) => {
+  catalog.append(createLoader());
+
   let currentOffset;
   if (additionalItem.size === 0 || document.querySelector('.pagination-btn_current').textContent == 1) {
     currentOffset = countForOffset;
@@ -92,20 +223,23 @@ export const createCatalogPage = async (countForLimit = limit, countForOffset = 
     currentOffset = countForOffset + additionalItem.size;
   }
 
-  // const currentOffset = additionalItem === 0 ? countForOffset : countForOffset + additionalItem;
-
-  catalog.append(createLoader());
-  filteredIds.length = 0;
   const filterSubmit = document.querySelectorAll('.btn_filter');
   const filterRequest = isFiltered;
-
-  filters.forEach((el) => {
-    el.value = '';
-  });
 
   filterSubmit.forEach((el) => {
     el.setAttribute('disabled', 'true');
   });
+
+  if (!isFiltered) {
+    filters.forEach((el) => {
+      el.value = '';
+    });
+  }
+
+  if (isFiltered) {
+    additionalItem = new Set();
+    currentFilteredPage = 1;
+  }
 
   const data = filterRequest ? await getFilteredInfo(filterRequest) : await getInfo(countForLimit, currentOffset);
   await createCards(data);

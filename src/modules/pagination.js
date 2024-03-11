@@ -1,9 +1,9 @@
 import { createCatalogPage, additionalItem } from './createCatalogPage';
 import { catalog, limit, lastPageNum } from './consts';
 
-const currentPageEl = document.querySelector('.pagination-btn_current');
 let currentPage = 1;
 
+const currentPageEl = document.querySelector('.pagination-btn_current');
 const nextPageBtn = document.querySelector('.pagination-btn_next');
 const prevPageBtn = document.querySelector('.pagination-btn_prev');
 const btnToStart = document.querySelector('.pagination-btn_start');

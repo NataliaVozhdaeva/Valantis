@@ -113,7 +113,7 @@ const paginationForFiltered = (pageNum) => {
   createPagination();
   hangListeners(pageToStartFiltered, pageMinusFiltered, pagePlusFiltered, pageToEndFiltered);
 
-  if (pageNum === lastFilteredPage) {
+  if (pageNum == lastFilteredPage) {
     notToGoFuther();
   }
 };
